@@ -1,0 +1,553 @@
+                            Java 11:
+
+1. HTTP Client API (Standardized):
+
+Before Java 11, developers used HttpURLConnection or third-party libraries like Apache HttpClient
+Java 11 introduced modern HTTP client.
+
+import java.net.URI;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
+
+public class Main {
+    public static void main(String[] args)
+            throws Exception {
+
+        HttpClient client =
+                HttpClient.newHttpClient();
+
+        HttpRequest request =
+                HttpRequest.newBuilder()
+                        .uri(new URI("https://example.com"))
+                        .GET()
+                        .build();
+
+        HttpResponse<String> response =
+                client.send(
+                        request,
+                        HttpResponse.BodyHandlers.ofString()
+                );
+
+        System.out.println(response.body());
+    }
+}
+
+Advantages:
+HTTP/2 support - Faster communication
+Async support - Non-blocking
+
+client.sendAsync(request, HttpResponse.BodyHandlers.ofString())
+      .thenApply(HttpResponse::body)
+      .thenAccept(System.out::println);
+
+2. var in Lambda Parameters: local variable type inference
+Java 11 extended it to lambda parameters.
+
+(var x, var y) -> x + y
+
+Useful for annotations.
+(@Nonnull var x, var y) -> x + y
+
+
+3. New String Methods:
+isBlank() - Checks whitespace-only strings.
+lines() - Converts string into stream of lines.
+          "Hello\nWorld".lines()
+
+strip() - Unicode-aware trim.
+repeat() - "Hi".repeat(3)
+
+4. Files API Enhancements: Cleaner than old buffered readers/writers.
+
+String content =
+    Files.readString(path);
+
+Files.writeString(path, "Hello");
+
+5. Run Single Java File Without Compilation:
+
+Before
+javac Main.java
+java Main
+
+After Java 11
+java Main.java
+
+Java compiles and runs automatically.
+
+6. Flight Recorder (JFR): Enterprise-grade monitoring tool. Now open-source in Java 11.
+Purpose: Collect JVM diagnostics:
+CPU
+memory
+GC
+thread activity
+lock contention
+
+Useful For Production debugging.
+
+eg. java -XX:StartFlightRecording...
+
+7. Epsilon Garbage Collector:  Experimental “no-op” GC.
+
+It:
+allocates memory
+never reclaims memory
+
+Used for:
+performance testing
+latency analysis
+
+8. Z Garbage Collector (ZGC) (Experimental): Very important JVM feature.
+
+Designed for:
+ultra-low latency
+large heaps
+Goal
+
+Pause times:
+under 10 ms
+even for huge heap sizes.
+
+Useful In:
+trading systems
+real-time systems
+large-scale backend systems
+
+Container Awareness (Very Important)
+
+9. Better Docker/Kubernetes support.
+
+JVM understands:
+container CPU limits
+memory limits
+
+Very important in cloud-native systems.
+
+
+
+
+                        Java 17:
+
+1. Sealed Classes (Very Important): One of the biggest Java 17 features.
+
+Introduced officially in Java 17.
+
+Problem Before Java 17, Any class could extend your class. Sometimes dangerous.
+Example:
+class Payment {
+}
+Anyone could extend it.
+
+Sealed Classes: You can restrict inheritance.
+
+Example
+public sealed class Payment permits CardPayment, UPIPayment {
+}
+
+Only these classes allowed to extend Payment:
+
+final class CardPayment extends Payment {
+}
+
+final class UPIPayment extends Payment {
+}
+
+Controlled inheritance
+Cleaner architecture
+Compiler safety
+
+2. Pattern Matching for switch (Preview): Huge readability improvement.
+
+Before Java 17, Messy instanceof checks:
+
+if (obj instanceof String) {
+    String s = (String) obj;
+}
+
+Java 17
+switch (obj) {
+
+    case String s ->
+        System.out.println(s);
+
+    case Integer i ->
+        System.out.println(i);
+
+    default ->
+        System.out.println("Unknown");
+}
+Cleaner code
+Better readability
+
+3. Foreign Function & Memory API (Incubator): Very advanced feature.
+
+4. Vector API (Second Incubator):
+
+5. ZGC Improvements:
+
+
+                        Java 21:
+
+
+1. Virtual Threads (BIGGEST FEATURE): One of the biggest innovations in Java history.
+"Virtual threads decouple Java threads from OS threads."
+
+Problem Before Java 21, Traditional threads are expensive, memory heavy, OS scheduling overhead, limited scalability
+
+Creating millions threads was impossible practically.
+
+Java 21 Solution, Virtual threads are:
+lightweight, JVM-managed, massively scalable
+Reduces the occurrence of 'OutOfMemoryError: Unable to Create New Native Thread'.
+Enhances application throughput.
+Reduces the amount of memory used by the application.
+
+eg. Thread.startVirtualThread(() -> {
+        System.out.println("Hello");
+    });
+
+
+    Creating Millions Threads
+    try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+        for (int i = 0; i < 1_000_000; i++) {
+
+            executor.submit(() -> {
+                Thread.sleep(1000);
+                return null;
+            });
+        }
+    }
+
+Massive scalability - Millions tasks
+Better throughput
+
+2. Structured Concurrency (Preview): One of the most important modern concurrency features.
+Structured Concurrency is a concept of dividing a task into subtasks and processing them concurrently.
+Structured concurrency introduces parent-child lifecycle for concurrent tasks, enabling failure propagation,
+ cancellation, and scoped task ownership, making concurrent code easier to reason about and safer.
+
+Purpose:
+Manage concurrent tasks with:
+lifecycle ownership
+cancellation propagation
+failure handling
+
+Unstructured Concurrency:
+
+Invoice createInvoice(int orderId, int customerId, String language)
+    throws InterruptedException, ExecutionException {
+  Future<Order> orderFuture =
+      executor.submit(() -> orderService.getOrder(orderId));
+
+  Future<Customer> customerFuture =
+      executor.submit(() -> customerService.getCustomer(customerId));
+
+  Future<InvoiceTemplate> invoiceTemplateFuture =
+      executor.submit(() -> invoiceTemplateService.getTemplate(language));
+
+  Order order = orderFuture.get();
+  Customer customer = customerFuture.get();
+  InvoiceTemplate invoiceTemplate = invoiceTemplateFuture.get();
+
+  return Invoice.generate(order, customer, invoiceTemplate);
+}
+
+If an error occurs in one subtask – how can we cancel the others? In the example above, if loadOrderFromOrderService(…) fails,
+ then orderFuture.get() throws an exception, the createInvoice(…) method ends, and we may have two orphan threads still running.
+
+How can we abort the subtasks when the parent task (“create invoice”) is cancelled – or when the complete application is shut down?
+
+How can we – in an alternative use case – cancel the remaining subtasks when only the result of a single subtask is needed?
+
+
+Structured Concurrency:
+Forking: You split a task into concurrent subtasks using scope.fork().
+Joining: You wait for subtasks to finish with scope.join().
+Result Handling: You can then process the results or handle exceptions collectively.
+
+ShutdownOnFailure: If any subtask fails, it triggers a "short circuit," cancelling all other still-running subtasks.
+ShutdownOnSuccess: Useful for "race" scenarios; once the first subtask succeeds, it cancels the remaining ones and returns that result.
+
+StructuredTaskScope.ShutdownOnSuccess()
+try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
+
+    var user = scope.fork(() -> getUser());
+
+    var orders = scope.fork(() -> getOrders());
+
+    scope.join();
+
+    scope.throwIfFailed();
+
+    System.out.println(user.get());
+}
+
+Parent-child task ownership
+Automatic cancellation
+Easier debugging
+
+Excellent for:
+
+parallel API calls
+request orchestration
+microservices aggregation
+
+
+3. Scoped Values (Preview): Alternative to ThreadLocal.
+Designed especially for virtual threads, immutable shared context.
+
+Problems With ThreadLocal, Mutable Shared State = Any method can change it. USER.set("Hacked");
+Memory Leaks, Huge production issue, If not removed: USER.remove();
+
+Core Idea
+Instead of: Global mutable state
+use: Scoped immutable context
+
+
+eg.    static final ScopedValue<String> USER = ScopedValue.newInstance();
+
+Good Use Cases:
+request context
+security context
+tracing IDs
+
+
+import java.lang.ScopedValue;
+import java.util.concurrent.StructuredTaskScope;
+
+public class Demo {
+
+    static final ScopedValue<String> TRACE_ID =
+            ScopedValue.newInstance();
+
+    static void serviceCall() {
+        System.out.println(
+                "Trace: " + TRACE_ID.get()
+        );
+    }
+
+    public static void main(String[] args)
+            throws Exception {
+
+        ScopedValue.where(
+                TRACE_ID,
+                "REQ-123"
+        ).run(() -> {
+
+            try (var scope =
+                         new StructuredTaskScope
+                                 .ShutdownOnFailure()) {
+
+                scope.fork(Demo::serviceCall);
+
+                scope.fork(Demo::serviceCall);
+
+                scope.join();
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        });
+    }
+}
+
+Output:
+
+Trace: REQ-123
+Trace: REQ-123
+
+
+4. Sequenced Collections:  New collection interfaces.
+
+Problem Before, Accessing:
+first element
+last element
+reverse order
+was inconsistent.
+
+Java 21 Solution
+
+New interfaces:
+
+SequencedCollection
+SequencedSet
+SequencedMap
+
+SequencedCollection<String> list = new ArrayList<>();
+
+list.addFirst("A");
+list.addLast("B");
+
+
+5. Pattern Matching for switch: Finalized in Java 21. Huge readability improvement.
+
+switch (obj) {
+
+    case String s ->
+        System.out.println(s);
+
+    case Integer i ->
+        System.out.println(i);
+
+    default ->
+        System.out.println("Unknown");
+}
+
+6. String Templates (Preview): Very modern language feature.
+
+Problem Before
+Messy concatenation: "Hello " + name
+
+Java 21: STR."Hello \{name}"
+
+Similar To Python f-strings.
+
+7. Unnamed Classes and Instance Main Methods: Simplifies beginner Java programs.
+
+Before
+public class Main {
+    public static void main(String[] args) {
+        System.out.println("Hello");
+    }
+}
+
+Java 21 Preview
+void main() {
+    System.out.println("Hello");
+}
+
+Compiler convert main method to static main method by itself,
+class Main {
+
+    void main() {
+        System.out.println("Hello");
+    }
+
+    public static void main(String[] args) {
+
+        new Main().main();
+    }
+}
+Reduce Java boilerplate.
+
+
+
+
+8. Foreign Function & Memory API: The Foreign Function & Memory API allows Java programs to call native code
+and access off-heap memory safely without using JNI.
+Java applications sometimes need:
+C/C++ libraries
+GPU libraries
+OS APIs
+high-performance native systems
+
+Problems With JNI(Java Native Interface): JNI is notoriously difficult.
+Complex
+Unsafe - Manual memory management.
+
+Java Solution — FFM API: The new API provides:
+Allows Java to call:
+C functions
+OS APIs
+native libraries
+no JNI boilerplate
+
+Linker linker = Linker.nativeLinker();
+SymbolLookup lookup = linker.defaultLookup();  Function Lookup
+MemorySegment strlenSymbol = lookup.find("strlen").get();  Find Native Symbol
+FunctionDescriptor descriptor = FunctionDescriptor.of(JAVA_INT, ADDRESS);  Define Signature
+MethodHandle strlen = linker.downcallHandle(strlenSymbol, descriptor);  Create Callable Handle
+int len = (int) strlen.invoke(...);  Invoke Native Function
+
+
+
+9. Vector API: Perform multiple computations simultaneously.
+Vector API allows Java programs to perform multiple mathematical operations simultaneously using CPU
+vector instructions (SIMD - Single Instruction Multiple Data).
+
+Example
+
+Instead of: one operation at a time (Scalar Processing)
+1+1
+2+2
+3+3
+4+4
+
+CPU can do: vector operations
+[1,2,3,4]
++
+[1,2,3,4]
+=
+[2,4,6,8] in one operation. Huge speedup.
+
+Scalar Processing:
+for (int i = 0; i < n; i++) {
+    c[i] = a[i] + b[i];
+}
+
+Vector Processing:
+import jdk.incubator.vector.*;
+
+public class Demo {
+
+    static final VectorSpecies<Integer> SPECIES = IntVector.SPECIES_PREFERRED;
+
+    public static void main(String[] args) {
+
+        int[] a = {1,2,3,4};
+        int[] b = {5,6,7,8};
+        int[] c = new int[4];
+
+        int i = 0;
+
+        for (; i < SPECIES.length(); i += SPECIES.length()) {
+
+            var va = IntVector.fromArray(SPECIES, a, i);
+            var vb = IntVector.fromArray(SPECIES, b, i);
+
+            var vc = va.add(vb);
+
+            vc.intoArray(c, i);
+        }
+
+        for (int x : c) {
+            System.out.println(x);
+        }
+    }
+}
+
+
+
+10. Generational ZGC: Major JVM enhancement.
+Generational ZGC is one of the biggest JVM garbage collection improvements. Ultra-low-latency garbage collector.
+It enhances Z Garbage Collector (ZGC) by adding Generational Collection.
+
+Generational ZGC is a low-latency garbage collector that separates objects into young and old generations
+to improve throughput, memory efficiency, and GC performance while maintaining extremely low pause times.
+
+
+First understand G1 Garbage Collector. It is a Current default collector in modern Java.
+The Garbage-First (G1) Garbage Collector is a server-style algorithm designed for multi-processor machines with large memories.
+
+Core Mechanism: Region-Based Layout:
+Unlike traditional collectors that divide the heap into fixed, contiguous generational sections (Eden, Survivor, Tenured),
+G1 partitions the entire heap into approximately 2,048 equal-sized regions (ranging from 1MB to 32MB).
+
+G1 tracks the amount of "live" data in each region. When it performs a collection,
+it prioritizes regions that are mostly full of garbage, hence the name "Garbage-First".
+
+
+
+Generational ZGC (Z Garbage Collector) is an advanced version of the ZGC garbage collector introduced in Java 21
+ (JEP 439) to improve application performance by maintaining the Weak Generational Hypothesis.
+ This hypothesis states that most objects die young; by focusing on the "Young Generation" more frequently,
+ the collector can reclaim memory more efficiently using fewer CPU resources.
+
+ Ultra-Low Latency: Maintains sub-millisecond pause times regardless of heap size.
+ Separated Generations: Divides the heap into a Young Generation (for recently allocated objects) and an Old Generation
+  (for objects that survive several GC cycles).
+
+How it Works:
+Colored Pointers: Uses metadata bits directly in object pointers to track object states without stopping application threads.
+Concurrency: All major tasks—marking, relocating, and compacting memory—happen concurrently while the application continues to run.
+Adaptive Memory Management: Dynamically resizes generations and scales the number of GC threads based on the current workload.

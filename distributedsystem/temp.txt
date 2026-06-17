@@ -1,0 +1,86 @@
+The REAL List You Must Master (~20 items)
+These are the only topics that FAANG Lead interviews consistently test:
+
+--Core System Design
+
+CAP theorem
+
+Consistency models (Strong, Eventual, Quorum)
+
+Partitioning/Sharding
+
+Replication strategies
+
+Caching patterns (cache-aside, write-through, invalidation)
+
+Load balancing strategies
+
+Rate limiting + throttling
+
+API Gateway + BFF
+
+
+
+--Distributed System Patterns
+
+Sagas (Orchestration vs Choreography)
+
+Outbox pattern
+
+Event Sourcing
+
+CQRS
+
+Idempotency
+
+At-least-once vs Exactly-once semantics
+
+
+
+--Resiliency
+
+Circuit breaker
+
+Retry + backoff
+
+Timeouts
+
+Bulkheads
+
+Graceful degradation
+
+
+
+
+--Infrastructure & Observability
+
+
+    Service mesh (sidecar), tracing (OpenTelemetry), health checks
+
+This is 90% of what FAANG tests.
+
+
+--Microservice Anti-patterns
+
+
+Differentiation topics (give “Architect” vibe)
+
+CAP Theorem deep understanding
+
+Consensus algorithms (Raft, Paxos)
+
+Gossip Protocol
+
+CRDTs
+
+Leader election (Zookeeper / etcd patterns)
+
+Chaos Engineering
+
+Data Mesh
+
+Backpressure handling
+
+Distributed schedulers
+
+Reads from follower vs quorum reads

@@ -1,0 +1,122 @@
+
+“How would you structure services so teams don’t block each other?”
+I structure services with clear ownership boundaries and stable API contracts so
+teams can work independently without tight coordination.
+1. Each service owns its own data (Separate DB)
+2. Backward-compatible APIs (Add fields but never remove without deprecation)
+3. Async communication where possible
+4. Versioned APIs (/v1, /v2, New features don’t break existing clients.)
+5. Clear domain ownership (Auth owns authentication, Payments owns billing, Search owns ranking)
+
+
+“What APIs should be exposed? What should remain internal?”
+Expose capability APIs and hide implementation details.
+Exposed APIs: Stable, business-level functions
+Example: POST /users           POST /payments/charge          GET /inventory/{id}
+These represent core capabilities, not how the capability is done.
+
+Internal APIs (protected boundaries):
+DB schemas
+Internal workflows
+Micro-optimizations
+Helper/internal RPCs
+Feature-flag logic
+Experimental endpoints
+Admin/debug endpoints
+
+
+
+"What should be synchronous vs asynchronous?"
+Synchronous (real-time): User is waiting for a response and Strong consistency needed. Latency budget < 200 ms
+Examples:
+Login
+Search autocomplete
+Payments authorization
+Asynchronous (event-driven): Work can be deferred. It may take seconds/minutes. Multiple downstream systems are involved.
+High-fanout workflows
+Examples:
+Send email after signup
+Analytics pipeline
+Billing reconciliation
+Caching warming
+Retry queues for flaky services
+
+
+
+"What happens when this dependency fails?"
+I design for graceful degradation and fault isolation.
+Techniques:
+--Circuit breaker
+    Stop calling failing service ? protect system.
+--Retry with exponential backoff
+--Fallbacks
+    Cached result
+    Reduced-quality response
+    Default behavior
+--Timeout boundaries
+    Never wait indefinitely
+    Every API must have strict timeouts
+--Bulkheads
+    Limit max connections per dependency
+    ? Failure in one area shouldn’t take down entire service.
+--Idempotent operations
+    ? So retries don't corrupt data.
+--Async queues
+    ? If sync call fails, push to a durable queue for later retry.
+Fault tolerance is a boundary itself.
+
+
+
+“Which parts of your system must be abstracted behind interfaces?”
+Any component that is volatile, third-party, or likely to change must present behind an interface boundary.
+--External dependencies
+    Payment gateways
+    SMS/email providers
+    Storage systems (S3, GCS)
+--Volatile logic
+    Pricing
+    Recommendation models
+    Fraud rules
+--Infrastructure
+    Cache
+    Databases
+    Queues
+--Feature implementations
+    File parser interface
+    Notification interface
+    Auth provider interface
+Why?
+Interfaces ? replaceable, mockable, and unit-testable components.
+
+
+“Where would you apply caching and what boundaries does it create?”
+I apply caching at well-defined boundaries where data is stable for a short period and expensive to recompute.
+Caching locations:
+--Read-heavy APIs (edge cache/CDN)
+    Home feed
+    Product pages
+    Static content
+        Boundary:
+        Users see stale-but-fast data. You must answer: Is staleness acceptable?
+--Service-level caching (Redis/Memcached)
+    Expensive DB queries
+    User preferences
+    Precomputed recommendations
+        Boundary:
+        Service becomes dependent on cache eviction strategy + consistency guarantees.
+--Client-side caching
+    App side
+    Browser local storage
+        Boundary:
+        Client sees data even when offline ? must reconcile on reconnect.
+--Write-through / write-behind caching
+    Improves performance but adds correctness boundaries.
+
+
+
+"How caching creates boundaries?"
+Boundaries between current data and stale cached data
+Boundaries between fast path and slow path
+Boundaries for cache invalidation logic
+Boundaries for when cache failure shouldn’t take down system
+Caching is always an intentional boundary decision.

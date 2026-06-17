@@ -1,0 +1,237 @@
+1. Traversal Algorithms
+DFS (Depth First Search)
+
+BFS (Breadth First Search)
+
+
+
+2. Shortest Path Algorithms
+Dijkstra’s Algorithm (single source shortest path for non-negative weights)
+
+Bellman-Ford Algorithm (handles negative weights)
+
+Floyd-Warshall Algorithm (all pairs shortest paths)
+
+Johnson’s Algorithm (all pairs shortest paths, efficient for sparse graphs)
+
+Yen’s Algorithm (find the K-shortest paths)
+
+Eppstein’s Algorithm (find the K-shortest paths)
+
+A* Search (heuristic-based shortest path, AI applications)
+
+BFS for Unweighted Shortest Path
+
+0-1 BFS (for edge weights 0 or 1, uses deque)
+
+
+
+3. Minimum Spanning Tree (MST) Algorithms
+Kruskal’s Algorithm (uses Union-Find / Disjoint Set)
+
+Prim’s Algorithm (uses greedy + priority queue)
+
+Boruvka’s Algorithm (less common, but useful in parallel/distributed systems)
+
+
+
+4. Topological Ordering / DAG Algorithms
+Topological Sort (DFS-based)
+
+Kahn’s Algorithm (BFS-based)
+
+Longest Path in DAG (using topological order)
+
+
+
+5. Connectivity Algorithms
+Union-Find / Disjoint Set Union (DSU)
+
+Kosaraju’s Algorithm (strongly connected components, SCC)
+
+Tarjan’s Algorithm (SCC + articulation points + bridges)
+
+Fleury’s / Hierholzer’s Algorithm (Eulerian path/circuit)
+
+Hamiltonian Path / Circuit (NP-complete)
+
+
+
+6. Flow / Matching Algorithms
+Ford-Fulkerson Algorithm (max flow)
+
+Edmonds-Karp Algorithm (max flow with BFS)
+
+Dinic’s Algorithm (faster max flow)
+
+Hopcroft–Karp Algorithm (maximum bipartite matching)
+
+Hungarian Algorithm (assignment problem, bipartite weighted matching)
+
+
+7. Cycle Detection
+Cycle Detection in Undirected Graph (DFS / Union-Find)
+
+Cycle Detection in Directed Graph (DFS with recursion stack / Kahn’s Algo)
+
+
+8. Matching / Bipartite Graph
+Bipartite Check (using BFS/DFS coloring)
+
+Hopcroft-Karp Algorithm, König’s theorem (Maximum Bipartite Matching)
+
+Hungarian Algorithm (Assignment Problem)
+
+Ford–Fulkerson, Edmonds–Karp, Dinic's Algorithm
+
+
+
+9. Eulerian & Hamiltonian Paths
+Eulerian Path & Circuit (Hierholzer’s Algorithm)
+
+Hamiltonian Path/Cycle (NP-Complete, backtracking/DP approaches)
+
+
+
+10. Advanced / Specialized Algorithms
+Johnson’s Algorithm (for sparse graphs, APSP)
+
+Warshall’s Algorithm (transitive closure)
+
+PageRank (Google search algorithm) (graph ranking)
+
+Minimum Cut / Maximum Flow (Stoer–Wagner, Gomory-Hu Tree)
+
+    Transitive Closure (Floyd-Warshall)
+
+Warshall’s Algorithm (reachability matrix)
+
+Graph Coloring
+
+Articulation Points & Bridges (Tarjan’s Algorithm)
+
+Biconnected Components
+
+Chordal Graph Recognition
+
+Planarity Testing
+
+
+
+
+
+? In Interviews (Google, Meta, Amazon, Microsoft, etc.), the most commonly asked are:
+BFS, DFS
+
+Topological Sort (DFS & Kahn’s)
+
+Dijkstra & Bellman-Ford
+
+Kruskal & Prim (MST)
+
+Union-Find (Cycle detection, Connected Components)
+
+Tarjan / Kosaraju (SCCs)
+
+Graph Traversals + Applications (bipartite check, connected components, shortest path in unweighted graphs, etc.)
+
+Tree Algorithms:
+
+    Lowest Common Ancestor (LCA) – Binary Lifting, Euler Tour + RMQ
+
+    Heavy-Light Decomposition
+
+    Centroid Decomposition
+
+Graph Decomposition:
+
+    Bridge Tree
+
+    Block-Cut Tree
+
+Randomized Graph Algorithms
+
+Dynamic Graph Algorithms (incremental/decremental connectivity, union-find with rollback)
+
+
+
+
+----------------------------------------------------------------------------------------------------
+
+
+
+1. Greedy Coloring (Sequential Coloring)
+
+Idea: Assign the smallest possible color to each vertex sequentially.
+
+Time Complexity: O(V + E)
+
+Use Case: Quick heuristic; works for general graphs.
+
+Notes: May not give minimum colors (chromatic number), but fast and simple.
+
+2. Welsh-Powell Algorithm
+
+Idea: Order vertices by decreasing degree, then apply greedy coloring.
+
+Time Complexity: O(V²)
+
+Use Case: Better than simple greedy for reducing colors.
+
+3. Backtracking (Exact Coloring)
+
+Idea: DFS + try all colors for each vertex ? backtrack if conflict.
+
+Time Complexity: O(k^V) for k colors (NP-hard)
+
+Use Case: Small graphs / exact chromatic number computation
+
+Notes: Only feasible for small graphs in interviews.
+
+4. DSATUR (Degree of Saturation)
+
+Idea: Always pick the vertex with the highest number of differently colored neighbors next.
+
+Time Complexity: O(V²)
+
+Use Case: Heuristic to reduce colors; often better than greedy.
+
+5. Bipartite Check Coloring
+
+Idea: 2-coloring check using BFS/DFS.
+
+Time Complexity: O(V + E)
+
+Use Case: For bipartite graphs ? simple 2-color problem.
+
+6. Coloring for Special Graphs
+
+Tree Coloring ? Always 2-colorable
+
+Cycle Coloring ? 2-colorable if even, 3-colorable if odd
+
+Planar Graphs ? 4-color theorem (interview theory)
+
+7. Map Coloring / Constraint Satisfaction (CSP)
+
+Idea: Backtracking + constraints, often used in scheduling, Sudoku-like problems.
+
+Time Complexity: Exponential in general
+
+Use Case: FAANG interviews for problem-solving + backtracking
+
+8. Interval Graph Coloring
+
+Idea: Sort intervals by start time, assign colors (rooms).
+
+Time Complexity: O(V log V)
+
+Use Case: Real-world scheduling problems
+
+9. Topological / DAG-based Coloring
+
+Idea: Use topological order and assign colors for precedence constraints
+
+Time Complexity: O(V + E)
+
+Use Case: Task scheduling, layered coloring

@@ -1,0 +1,45 @@
+
+
+Important Combined Design Patterns:
+
+    Pattern Combo / Focus           	            Purpose	                                     Example Project / Use Case
+Factory + Singleton	Ensures controlled object creation — single point of instance management.	“How do you ensure only one DB connection object?”
+Bridge + Factory	Decouples abstraction from implementation, created dynamically.	            “Design a cross-platform UI framework (e.g., Android/iOS renderers).”
+Observer + Mediator	Centralized communication between loosely coupled modules.	                “How would you design a notification/event system or chat app?”
+Strategy + Factory	Choose algorithms dynamically at runtime.	                                “How do you design a payment gateway or sorting service?”
+Command + Memento	Enable undo/redo and state tracking.	                                    “Design a text editor or drawing app with undo/redo.”
+Decorator + Proxy	Add behavior around access control or caching.	                            “Design an API rate limiter or cache layer.”
+Chain of Responsibility + Command
+                    Sequential request handling in pipelines.	                                “Design an HTTP middleware chain or validation pipeline.”
+Composite + Visitor	Operate uniformly on tree-like structures.	                                “How would you design a file system or AST walker?”
+Flyweight + Factory	Efficiently reuse small immutable objects.	                                “Design a text rendering system with shared characters.”
+Template Method + Strategy
+                    Combine fixed workflow with flexible steps.	                                “Design a build/deploy pipeline with custom hooks.”
+Adapter + Bridge	Integrate multiple backends or APIs with different interfaces.	            “Design a multi-cloud storage system (AWS/GCP/Azure).”
+Observer + Singleton (EventBus)	Global event distribution across modules.	                    “How would you implement a central notification or event bus?”
+Proxy + Chain of Responsibility
+                    Multiple proxy filters (auth, logging, caching).	                        “Design a microservice gateway / interceptor pipeline.”
+Builder + Prototype	Simplify object creation and cloning.	                                    “Design a config loader or request builder.”
+State + Strategy	Combine internal state transitions with dynamic behavior.	                “Design a vending machine or TCP connection manager.”
+
+
+
+
+System Type                             	Typical Pattern                              Mix	Example
+Microservices / Event Bus       	    Mediator + Observer + Command           	Slack / Kafka-like event systems
+UI Frameworks	                        Composite + Visitor + Strategy	            React / Swing Component Trees
+Game Engine	                            Prototype + State + Strategy	            Unity AI or object behavior
+Payment / Billing System	            Bridge + Factory + Strategy	                Stripe/PayPal integration
+API Gateway / Middleware	            Proxy + Chain + Decorator	                AWS API Gateway, Spring Filters
+Cloud Config Manager	                Singleton + Factory + Observer	            Config propagation in distributed systems
+
+
+
+
+
+
+
+
+
+
+

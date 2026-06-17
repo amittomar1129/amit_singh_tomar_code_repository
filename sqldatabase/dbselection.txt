@@ -1,0 +1,185 @@
+When engineers design large-scale systems, the discussion often starts with a question like:
+
+“Which database should we use?”
+
+But a better question is:
+
+“Which data structure best fits our access pattern?”
+
+Because most modern databases are essentially large-scale implementations of specific data structures optimized for different workloads.
+
+Once you understand the data structures behind databases, choosing the right database becomes much easier.
+
+Let’s explore this idea with real-world examples from companies like Uber and Twitter.
+
+The Core Idea
+Every system has a specific type of query pattern.
+
+Examples:
+
+Point lookup
+Range queries
+Time-series queries
+Nearest neighbor search
+Fast counters
+Full-text search
+Each of these patterns maps naturally to a specific data structure.
+
+Databases simply implement these data structures efficiently at scale.
+
+Example 1: Uber and Geospatial Queries
+Consider a ride-hailing system like Uber.
+
+When a rider opens the app, the system needs to answer a question like:
+
+“What are the 5 nearest drivers to this location?”
+
+This is a spatial nearest-neighbor search problem.
+
+A regular relational database index is not optimized for spatial data. Instead, geospatial systems use R-Trees or similar spatial indexing structures.
+
+Databases like PostGIS (an extension of PostgreSQL) support these spatial indexes.
+
+R-Trees organize objects in bounding rectangles, allowing the system to quickly eliminate large regions that don’t contain relevant data.
+
+This makes operations like:
+
+finding drivers within a radius
+nearest neighbor search
+location intersection queries
+extremely efficient.
+
+So in this case, we are not really choosing PostGIS.
+
+We are choosing the R-Tree data structure optimized for spatial queries.
+
+Example 2: Twitter Timelines and Write-Heavy Systems
+Now consider a social platform like Twitter.
+
+When a user opens the app, they want to see:
+
+“The latest tweets from the people I follow.”
+
+At first glance, this looks like a read-heavy problem.
+
+But Twitter uses a technique called fan-out on write.
+
+When someone posts a tweet, the system pushes that tweet into the timelines of all followers immediately.
+
+For example:
+
+If a user has 1 million followers, posting a tweet could trigger 1 million writes.
+
+Because of this, the timeline system becomes extremely write-heavy.
+
+This is why databases like Cassandra or DynamoDB are used.
+
+These databases are based on LSM Trees (Log Structured Merge Trees).
+
+LSM Trees are designed for:
+
+very high write throughput
+sequential disk writes
+efficient time-based range queries
+The write flow looks like this:
+
+Data is written to an in-memory structure (memtable)
+Writes are appended to a commit log
+Data is flushed to disk as immutable files
+Background compaction merges files
+This design makes writes extremely fast, which is perfect for large-scale timeline fan-out systems.
+
+Become a Medium member
+So again, the real choice here is LSM Trees, not just Cassandra.
+
+Example 3: Rate Limiters and Redis
+Many systems need rate limiting, for example:
+
+“Allow only 100 API requests per minute per user.”
+
+To implement this efficiently, the system must:
+
+store timestamps of requests
+quickly remove expired entries
+count requests in a time window
+operate with extremely low latency
+This is where Redis becomes ideal.
+
+Redis is an in-memory datastore that provides multiple specialized data structures.
+
+One particularly useful structure is the sorted set, which internally uses skip lists.
+
+Skip lists allow:
+
+fast insertion
+fast deletion
+efficient range queries
+For a rate limiter, we can store request timestamps as scores in a sorted set.
+
+Then the system can:
+
+remove timestamps older than the time window
+count the remaining entries
+block requests if the limit is exceeded
+Because Redis runs entirely in memory, these operations often complete in sub-millisecond time.
+
+So the real reason Redis works well here is the skip list and in-memory data structures it provides.
+
+Example 4: Traditional Transactional Systems
+Many applications rely on relational databases like MySQL or PostgreSQL.
+
+These systems are optimized for workloads such as:
+
+fetching records by primary key
+executing joins
+maintaining transactional consistency
+performing range queries
+Relational databases typically use B-Trees for indexing.
+
+B-Trees are excellent for:
+
+point lookups
+ordered scans
+range queries
+For example:
+
+retrieving a user by ID
+listing orders between two timestamps
+sorting results by a field
+So when choosing a relational database, we are essentially choosing the B-Tree data structure.
+
+Mapping Problems to Data Structures
+A helpful way to approach system design is to map problem types to data structures.
+
+Press enter or click to view image in full size
+
+Each database is simply a highly optimized distributed implementation of these structures.
+
+The Key Insight
+When engineers ask:
+
+“Which database should we use?”
+
+The real answer comes from understanding:
+
+What queries will run most often
+What latency is required
+What the read/write ratio is
+Which data structure best supports those operations
+Once you identify the correct data structure, the database choice often becomes obvious.
+
+Final Takeaway
+A powerful mental model for system design is:
+
+Databases are distributed implementations of data structures.
+
+Understanding structures like:
+
+B-Trees
+LSM Trees
+Skip Lists
+R-Trees
+Inverted Indexes
+will help you understand why companies choose certain databases for specific systems.
+
+And that knowledge is what allows engineers to make better architecture decisions at scale. ?

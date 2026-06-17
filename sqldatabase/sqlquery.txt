@@ -1,0 +1,473 @@
+
+
+---Find Employees Earning More Than Their Manager:
+
+SELECT e.name FROM Employee e JOIN Employee m
+  ON e.managerId = m.id
+WHERE e.salary > m.salary;
+
+---Rank Employees by Salary (Dense Rank):
+
+SELECT name, salary, DENSE_RANK() OVER (ORDER BY salary DESC) AS rank
+FROM Employee;
+
+RANK() -> gaps
+DENSE_RANK() -> no gaps
+
+---Find Consecutive Login Days: Find users who logged in for 3 consecutive days.
+
+SELECT user_id
+FROM (
+    SELECT user_id,
+           login_date,
+           DATE_SUB(login_date, INTERVAL ROW_NUMBER() OVER (PARTITION BY user_id ORDER BY login_date) DAY) AS grp
+    FROM (
+        SELECT DISTINCT user_id, login_date
+        FROM Logins
+    ) d
+) t
+GROUP BY user_id, grp
+HAVING COUNT(*) >= 3;
+
+---Find Running Total (Cumulative Sum): Find running total by date.
+Table: Sales(date, amount)
+SELECT date,
+       SUM(amount) OVER (ORDER BY date) AS running_total
+FROM Sales;
+
+---Find top 2 highest paid employees per department.:
+
+SELECT * FROM (
+    SELECT *, DENSE_RANK() OVER ( PARTITION BY department ORDER BY salary DESC ) AS rnk
+    FROM Employee
+) t
+WHERE rnk <= 2;
+
+---Find Users With No Activity in Last 30 Days
+Table: Users(user_id, last_active_date)
+
+SELECT user_id FROM Users WHERE last_active_date < CURRENT_DATE - INTERVAL 30 DAY;
+
+---Find Users With Longest Consecutive Activity Streak: Find each user’s longest consecutive login streak.
+
+SELECT user_id, MAX(streak_len) AS longest_streak
+FROM (
+    SELECT user_id,
+           grp,
+           COUNT(*) AS streak_len
+    FROM (
+        SELECT user_id,
+               login_date,
+               DATE_SUB(
+                   login_date,
+                   INTERVAL ROW_NUMBER() OVER (
+                       PARTITION BY user_id
+                       ORDER BY login_date
+                   ) DAY
+               ) AS grp
+        FROM (
+            SELECT DISTINCT user_id, login_date
+            FROM Logins
+        ) d
+    ) t
+    GROUP BY user_id, grp
+) s
+GROUP BY user_id;
+
+---Find Top N Records Per Group (With Ties):
+
+SELECT *
+    FROM (
+        SELECT *, DENSE_RANK() OVER ( PARTITION BY department ORDER BY salary DESC) AS rnk FROM Employee
+    ) t
+WHERE rnk <= 3;
+
+---Find Customers Who Purchased on Consecutive Days:
+
+SELECT DISTINCT user_id
+FROM (
+    SELECT user_id,
+           DATE_SUB(
+               order_date,
+               INTERVAL ROW_NUMBER() OVER (
+                   PARTITION BY user_id
+                   ORDER BY order_date
+               ) DAY
+           ) AS grp
+    FROM (
+        SELECT DISTINCT user_id, order_date
+        FROM Orders
+    ) d
+) t
+GROUP BY user_id, grp
+HAVING COUNT(*) >= 2;
+
+---Find First and Last Event Per User:
+
+SELECT DISTINCT user_id,
+       FIRST_VALUE(event_date)
+           OVER (PARTITION BY user_id ORDER BY event_date) AS first_event,
+       LAST_VALUE(event_date)
+           OVER (
+               PARTITION BY user_id
+               ORDER BY event_date
+               ROWS BETWEEN UNBOUNDED PRECEDING AND UNBOUNDED FOLLOWING
+           ) AS last_event
+FROM Events;
+
+---Running Total Per Category:
+
+SELECT date,
+       category,
+       SUM(amount) OVER (
+           PARTITION BY category
+           ORDER BY date
+       ) AS running_total
+FROM Sales;
+
+---Find Users Who Did X but Never Did Y:
+
+SELECT DISTINCT u.user_id
+FROM Users u
+WHERE EXISTS (
+    SELECT 1 FROM Actions a
+    WHERE a.user_id = u.user_id
+      AND a.action = 'X'
+)
+AND NOT EXISTS (
+    SELECT 1 FROM Actions a
+    WHERE a.user_id = u.user_id
+      AND a.action = 'Y'
+);
+
+---Find Median Salary: Median salary is the middle salary when all salaries are sorted in ascending order.
+
+SELECT AVG(salary) AS median_salary
+FROM (
+    SELECT salary, ROW_NUMBER() OVER (ORDER BY salary) AS rn, COUNT(*) OVER () AS cnt FROM Employee
+) t
+WHERE rn IN ((cnt + 1) / 2, (cnt + 2) / 2);
+
+---Identify Gaps in Sequential IDs:
+
+SELECT id + 1 AS start_gap,
+       LEAD(id) OVER (ORDER BY id) - 1 AS end_gap
+FROM Numbers
+WHERE LEAD(id) OVER (ORDER BY id) > id + 1;
+
+---Find Most Frequent Value Per Group:
+
+SELECT category, value
+FROM (
+    SELECT category,
+           value,
+           COUNT(*) AS freq,
+           RANK() OVER (
+               PARTITION BY category
+               ORDER BY COUNT(*) DESC
+           ) AS rnk
+    FROM Data
+    GROUP BY category, value
+) t
+WHERE rnk = 1;
+
+---Find Percentage Contribution:
+
+SELECT product,
+       revenue,
+       revenue * 100.0 / SUM(revenue) OVER () AS percentage
+FROM Sales;
+
+---Detect Continuous Failed Attempts (Fraud Pattern):
+
+SELECT user_id
+FROM (
+    SELECT user_id,
+           DATE_SUB(
+               attempt_time,
+               INTERVAL ROW_NUMBER() OVER (
+                   PARTITION BY user_id
+                   ORDER BY attempt_time
+               ) MINUTE
+           ) AS grp
+    FROM Attempts
+    WHERE status = 'FAILED'
+) t
+GROUP BY user_id, grp
+HAVING COUNT(*) >= 5;
+
+---Find Latest Record Per Key:
+
+SELECT *
+FROM (
+   SELECT *,
+          ROW_NUMBER() OVER (
+              PARTITION BY user_id
+              ORDER BY updated_at DESC
+          ) AS rn
+   FROM UserUpdates
+) t
+WHERE rn = 1;
+
+---Remove Duplicates Without DELETE:
+
+SELECT *
+FROM (
+    SELECT *,
+           ROW_NUMBER() OVER (
+               PARTITION BY email
+               ORDER BY id
+           ) AS rn
+    FROM Users
+) t
+WHERE rn = 1;
+
+---Find Overlapping Time Intervals:
+
+SELECT a.id, b.id
+FROM Intervals a
+JOIN Intervals b
+  ON a.id < b.id
+ AND a.start_time <= b.end_time
+ AND b.start_time <= a.end_time;
+
+ ---Calculate Rolling 7-Day Average:
+
+ SELECT date,
+        AVG(amount) OVER (
+            ORDER BY date
+            ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+        ) AS rolling_avg
+ FROM Sales;
+
+
+
+
+
+-------------------------------------------------------------Functions
+
+1. EXISTS vs IN
+IN -> checks if a value exists in a list, Subquery evaluated first. Slower
+EXISTS -> checks if a row exists in a correlated subquery, Row-by-row check. Faster
+
+Example: Find customers who placed at least one order.
+Using IN
+SELECT * FROM Customers WHERE id IN (SELECT customer_id FROM Orders);
+Using EXISTS
+SELECT * FROM Customers c WHERE EXISTS (SELECT 1 FROM Orders o WHERE o.customer_id = c.id);
+
+
+NULL Pitfall:
+SELECT * FROM Customers
+WHERE id NOT IN (SELECT customer_id FROM Orders);
+If Orders.customer_id contains NULL, result is EMPTY.
+Correct version:
+SELECT *
+FROM Customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Orders o
+    WHERE o.customer_id = c.id
+);
+Use EXISTS for large tables and NULL-safe logic.
+Avoid IN when subquery may contain NULLs.
+
+
+
+2. LEFT JOIN vs NOT EXISTS
+LEFT JOIN -> join tables, then filter NULLs, Intent is Less clear. Null safety Risky. Duplicate Risk. Slower.
+NOT EXISTS -> anti-join (absence check), Intent is very clear. Null safe. No Duplicate Risk. Faster.
+
+LEFT JOIN version
+SELECT c.id FROM Customers c LEFT JOIN Orders o ON c.id = o.customer_id WHERE o.id IS NULL;
+
+NOT EXISTS version
+SELECT c.id
+FROM Customers c
+WHERE NOT EXISTS (
+    SELECT 1
+    FROM Orders o
+    WHERE o.customer_id = c.id
+);
+
+
+3. Window Functions vs GROUP BY
+GROUP BY -> collapses rows, Rows preserved
+Window functions -> keep rows, add analytics, Rows not preserved
+
+Example 1: Total Salary per Department
+GROUP BY
+SELECT department, SUM(salary) FROM Employee GROUP BY department;
+
+Window Function
+SELECT name,
+       department,
+       SUM(salary) OVER (PARTITION BY department) AS dept_total
+FROM Employee;
+
+Use GROUP BY for summaries.
+Use Window Functions for analytics and ranking.
+
+------------------------------------------------------------------------
+
+Both RANK() and DENSE_RANK() are window functions used to assign rankings to rows based on an ORDER BY clause.
+
+1. RANK() assigns a rank to each row with gaps when there are ties.
+   Syntax: RANK() OVER (ORDER BY column DESC)
+
+Table: Employee
+
+  name	salary
+    A	100
+    B	90
+    C	90
+    D	80
+SELECT name, salary,
+       RANK() OVER (ORDER BY salary DESC) AS rnk
+FROM Employee;
+
+Output
+      name salary	rnk
+        A	100	    1
+        B	90	    2
+        C	90	    2
+        D	80	    4
+Ties get same rank.
+Next rank is skipped.
+
+DENSE_RANK() assigns a rank without gaps when there are ties.
+
+SELECT name, salary,
+       DENSE_RANK() OVER (ORDER BY salary DESC) AS rnk
+FROM Employee;
+
+Output
+      name salary	rnk
+        A	100	    1
+        B	90	    2
+        C	90	    2
+        D	80	    3
+
+Ties get same rank
+No rank skipped
+
+---------------------------
+
+OVER defines the window of rows over which a window function operates without collapsing rows.
+Basic Syntax:
+function_name(...) OVER (
+    PARTITION BY ...
+    ORDER BY ...
+)
+Clause                          	Purpose
+OVER                	Starts window definition
+PARTITION BY	        Splits rows into groups
+ORDER BY	            Defines order within group
+Frame (optional)	    Limits rows used
+
+Very Important: OVER() is used to apply a calculation across a set of rows while still keeping each individual row in the result.
+Example: Percentage Contribution
+Table: Sales
+product	    revenue
+A	        100
+B	        300
+C	        600
+
+Without OVER() (Problem)
+SELECT SUM(revenue) FROM Sales;
+Result: 1000  You only get one row. You lose product-level detail.
+
+Using GROUP BY (Still Not Enough)
+SELECT product, SUM(revenue) FROM Sales GROUP BY product;
+Result:
+A           100
+B           300
+C           600
+
+Correct Solution Using OVER()
+SELECT product,
+       revenue,
+       revenue * 100.0 / SUM(revenue) OVER () AS percentage
+FROM Sales;
+
+Output:
+product     revenue 	percentage
+A	        100	        10
+B	        300	        30
+C	        600	        60
+
+----------------------------
+
+PARTITION BY: PARTITION BY divides rows into independent groups within a window function, without collapsing rows.
+Without PARTITION BY: Window function runs on entire result set.
+With PARTITION BY: Window function runs separately per group.
+Think of it as: GROUP BY behavior but without losing rows.
+
+Basic Syntax
+function_name(...) OVER (
+    PARTITION BY column1, column2
+    ORDER BY column3
+)
+
+
+Example 1: Salary Total per Department
+Table: Employee
+
+name	dept	salary
+A	    HR	    100
+B	    HR	    200
+C	    IT	    300
+
+SELECT name,
+       dept,
+       salary,
+       SUM(salary) OVER (PARTITION BY dept) AS dept_total
+FROM Employee;
+
+Output
+name	dept	salary	dept_total
+A	    HR  	100	    300
+B	    HR	    200	    300
+C	    IT	    300	    300
+HR rows see only HR salaries
+IT rows see only IT salaries
+Rows are not collapsed
+
+--------------------------------------------
+
+DATE_SUB() subtracts a specified time interval from a given date or datetime.
+
+Basic Syntax:
+DATE_SUB(date_value, INTERVAL n unit)
+date_value -> DATE or DATETIME
+n -> integer
+unit -> DAY, MONTH, YEAR, HOUR, MINUTE, SECOND
+
+Example:
+Subtract 7 Days
+SELECT DATE_SUB('2024-01-10', INTERVAL 7 DAY);
+Subtract 1 Month
+SELECT DATE_SUB('2024-03-31', INTERVAL 1 MONTH);
+
+----------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

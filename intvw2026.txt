@@ -1,0 +1,331 @@
+Java 21 Features
+
+
+
+- Need to call two downstream systems sequentially, First One accepts auth token for API but
+second one not accepting that end user account credential. How to authenticate it?
+
+This is a very common enterprise integration problem in microservices and distributed systems.
+You have:
+Downstream System A
+    Accepts end-user auth token (OAuth/JWT/SAML etc.)
+    Works with user identity propagation
+Downstream System B
+    Does NOT trust or accept user credential/token
+    Requires different authentication
+The solution depends on the trust boundary and ownership model.
+
+I would propagate the user token only to services that trust the same identity provider and require user context.
+For downstream systems that don't accept end-user credentials, I would use service-to-service authentication
+using OAuth client credentials or mTLS. If user identity propagation is required, I would use token exchange or
+delegated authorization
+
+User -> Your Service -> Downstream A
+                     -> Downstream B
+
+1. OAuth2 Client Credentials: (Most Common & Recommended)
+This is the standard machine-to-machine authentication model.
+The user authenticates with your application, but your application authenticates separately with downstream system B.
+User logs in using OAuth2, JWT.
+Ex: JWT(User)
+    sub = amit123
+    role = premium_user
+Call Service A. A trusts same identity provider.
+Your service forwards user token.
+http
+Authorization: Bearer USER_JWT
+
+Need to Call Service B But B says: invalid audience, unknown issuer
+
+Obtain Service Token: Your service authenticates itself:
+                      http
+                      POST /oauth/token
+
+                      grant_type=client_credentials
+                      client_id=my-service
+                      client_secret=secret
+Authorization server returns:
+
+{
+  "access_token": "SERVICE_TOKEN",
+  "expires_in": 3600
+}
+
+Call B Authorization: Bearer SERVICE_TOKEN
+Success.
+
+
+2. Backend for Frontend (BFF): Frontend never talks directly to downstream systems.
+Your backend:
+authenticates user
+maps permissions
+calls internal systems with service identities
+3. mTLS Authentication: System B authenticates your service certificate.
+No user token needed.
+Used in:
+Highly secure internal networks
+Banking
+Kubernetes service mesh
+------------------------------------------------
+
+- How main thread know that all millions child threads have executed successfully?
+
+1. Thread.join()
+Simplest mechanism.
+
+public static void main(String[] args) throws Exception {
+
+        Thread t1 = new MyTask();
+        Thread t2 = new MyTask();
+
+        t1.start();
+        t2.start();
+
+        t1.join();
+        t2.join();
+
+        System.out.println("All child threads completed");
+}
+
+Impossible practically because joining millions individually is inefficient, thread creation expensive.
+
+2. CountDownLatch (Very Important): Main thread waits until counter becomes zero. Each worker decrements counter after finishing.
+
+import java.util.concurrent.CountDownLatch;
+
+public class Main {
+
+    public static void main(String[] args) throws Exception {
+
+        int tasks = 3;
+
+        CountDownLatch latch =
+                new CountDownLatch(tasks);
+
+        for (int i = 0; i < tasks; i++) {
+
+            new Thread(() -> {
+
+                try {
+                    System.out.println(
+                        Thread.currentThread().getName()
+                    );
+
+                } finally {
+                    latch.countDown();
+                }
+
+            }).start();
+        }
+
+        latch.await();
+
+        System.out.println("All tasks completed");
+    }
+}
+Why finally Important
+
+Even if thread crashes:
+
+finally {
+    latch.countDown();
+}
+
+Otherwise main thread waits forever.
+
+3. Future (Enterprise Standard): Used with ExecutorService. Main thread gets completion result.
+
+import java.util.concurrent.*;
+
+public class Main {
+
+    public static void main(String[] args)
+            throws Exception {
+
+        ExecutorService executor =
+                Executors.newFixedThreadPool(10);
+
+        Future<String> future =
+                executor.submit(() -> {
+
+                    Thread.sleep(1000);
+
+                    return "SUCCESS";
+                });
+
+        String result = future.get();
+
+        System.out.println(result);
+
+        executor.shutdown();
+    }
+}
+
+future.get()
+
+blocks until:
+
+task completes
+task fails
+timeout/interruption occurs
+
+
+If child thread throws exception:
+
+throw new RuntimeException();
+
+then:
+
+future.get()
+
+throws:
+
+ExecutionException
+
+This is how parent detects failure.
+
+
+4. Millions of Tasks -> ExecutorService: Real systems use thread pools.
+Creating millions threads: BAD
+Creating fixed worker pool: GOOD
+
+ExecutorService executor =
+    Executors.newFixedThreadPool(100);
+
+Main Thread Waits
+executor.shutdown();
+
+executor.awaitTermination(
+    1,
+    TimeUnit.HOURS
+);
+
+5. CompletableFuture (Modern Java): Very important for FAANG interviews.
+
+CompletableFuture<Void> all =
+    CompletableFuture.allOf(
+        future1,
+        future2,
+        future3
+    );
+
+all.join();
+
+System.out.println("All completed");
+
+Failure Detection: If any future fails:
+
+all.join()
+
+throws exception.
+
+6. Structured Concurrency (Java 21+):
+Structured Concurrency is one of the biggest modern concurrency improvements in Java.
+
+try (var scope =
+         new StructuredTaskScope.ShutdownOnFailure()) {
+
+    Future<String> f1 =
+            scope.fork(() -> callServiceA());
+
+    Future<String> f2 =
+            scope.fork(() -> callServiceB());
+
+    scope.join();
+
+    scope.throwIfFailed();
+
+    System.out.println(f1.resultNow());
+}
+
+Step 1 — Create Scope
+new StructuredTaskScope.ShutdownOnFailure()
+
+This means: if one task fails, cancel all remaining tasks.
+
+Step 2 — Fork Child Tasks
+scope.fork(...)
+
+Creates child task inside scope.
+
+Unlike raw threads:
+scope tracks them
+parent owns them
+
+Step 3 — Wait for Completion
+scope.join();
+
+Parent waits for all subtasks.
+
+Step 4 — Propagate Failures
+scope.throwIfFailed();
+
+If any child failed:
+
+exception propagated to parent
+
+serviceB fails
+    |
+Scope cancels serviceA
+    |
+Parent receives exception
+
+Traditional ExecutorService often forgets:
+canceling sibling tasks
+propagating errors correctly
+Structured concurrency fixes this automatically.
+
+Step 5 — Automatic Cleanup
+
+When scope exits:
+
+try-with-resources
+
+all remaining threads cleaned safely.
+
+
+
+Fastest Response Wins
+
+ShutdownOnSuccess
+try (var scope =
+         new StructuredTaskScope.ShutdownOnSuccess<String>()) {
+
+    scope.fork(() -> callPrimary());
+
+    scope.fork(() -> callReplica());
+
+    scope.fork(() -> callCache());
+
+    scope.join();
+
+    String result = scope.result();
+
+    System.out.println(result);
+}
+
+
+
+try (var scope =
+         new StructuredTaskScope.ShutdownOnFailure()) {
+
+    var user = scope.fork(() -> userService());
+
+    var payment = scope.fork(() -> paymentService());
+
+    var inventory = scope.fork(() -> inventoryService());
+
+    scope.join();
+
+    scope.throwIfFailed();
+
+    return combine(
+        user.get(),
+        payment.get(),
+        inventory.get()
+    );
+}
+
+
+
+
