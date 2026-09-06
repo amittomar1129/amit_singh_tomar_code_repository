@@ -57,6 +57,15 @@ package distributedsystem;
 //  Retries reuse the same key (that make operation to idempotent)
 //  Keys expire after a TTL (e.g., 24 hours)
 
+
+
+
+
+
+
+
+
+
 //  UPDATE account
 //  SET balance = balance - 100
 //  WHERE user_id = 1;
@@ -107,12 +116,14 @@ package distributedsystem;
 //  This is exactly the industry-standard approach.
 //  But here’s the catch This works only if you make it atomic, durable, and retry-safe.
 
+
+
+
 //  Handle INSERT failure correctly.
 //  When INSERT fails:
 //  DO NOT UPDATE
 //  Instead:
 //  Fetch existing record
-
 
 //  Handle crash (VERY IMPORTANT at scale)
 //  Problem:
@@ -131,6 +142,16 @@ package distributedsystem;
 //  This above idempotency solution guarantees that Same request is executed only once and
 //  it prevents duplicate payments, retries causing double deduction.
 
+
+
+
+
+
+
+
+
+
+
 //  Let`s take a real scenario:
 //  Two DIFFERENT requests
 //  Request A -> deduct 100 (key=123)
@@ -141,15 +162,15 @@ package distributedsystem;
 //  B reads 1000 -> writes 800
 //  Final: 800 Incorrect (should be 700)
 //  Both are valid, different operations but still final result is incorrect or data lost.
+
+
+
+
+
 //  We can solve this problem by adding versioning through optimistic locking.
 
 //  But versioning (optimistic locking) guarantees Concurrent modification of the same data by different requests.
 //  Explained in below point separately.
-
-
-
-
-
 
 //  2. Optimistic Locking: Versioning is a mechanism. Optimistic locking is a strategy that uses that mechanism.
 //  Versioning and optimistic locking alone cannot guarantee idempotency because they only detect write conflicts
@@ -182,10 +203,6 @@ package distributedsystem;
 //  UPDATE ... WHERE version = 2;
 //  succeeds
 //  Final result 800 (Incorrect)
-
-//  When CAN optimistic locking help? It is useful for:
-//  preventing race conditions on updates
-//  ensuring consistency of state
 
 //  Solution for this problem: Idempotency + Optimistic Locking
 
@@ -257,6 +274,17 @@ package distributedsystem;
 //  add timestamp + timeout
 //  allow retry if stale
 
+
+
+
+
+
+
+
+
+
+
+
 //  Important: How Google implemented it in their apps?
 
 //  Core philosophy at Google: “Make every request uniquely identifiable and use atomic conditional writes
@@ -323,6 +351,20 @@ package distributedsystem;
 
 //  Interestingly, Google often doesn’t need explicit “version column” optimistic locking
 //  because Spanner already provides transactional conflict detection.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 //  Key Difference using for update vs google approach:

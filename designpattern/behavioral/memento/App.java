@@ -13,9 +13,9 @@ public class App {
 
 //	Memento pattern is implemented with two Objects – Originator and Caretaker.
 //	The originator is the Object whose state needs to be saved and restored,
-//	The private inner class is called “Memento”, It uses an inner class to save the state of Object.
 // 	Caretaker responsible for keeping the memento. The memento is transparent to the caretaker,
 // 	and the caretaker must not operate on it.
+//	The private inner class is called “Memento”, It uses an inner class to save the state of Object.
 
 //	Advantage:
 //		It preserves encapsulation boundaries.

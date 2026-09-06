@@ -125,6 +125,7 @@ public class MergeIntervals {
       System.out.println("(" + interval[0] + ", " + interval[1] + ")");
     }
   }
+
   public int[][] sol(int[][] intervals, int[] target) {
     Arrays.sort(intervals, (a, b) -> a[0] - b[0]);
     List<int[]> result = new ArrayList<>();

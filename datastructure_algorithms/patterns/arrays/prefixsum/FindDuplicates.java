@@ -35,11 +35,11 @@ public class FindDuplicates {
       if (curr < 1 || curr > input.length) {
         continue; // skip invalid values
       }
-      int index = curr - 1;
-      if (input[index] < 0) {
+      int position = curr - 1;
+      if (input[position] < 0) {
         result.add(curr);
       } else {
-        input[index] = -input[index];
+        input[position] = -input[position];
       }
     }
 
@@ -48,7 +48,7 @@ public class FindDuplicates {
 
   public static void main(String[] args) {
     int[] nums = {4, 3, 2, 7, 8, 2, 1, 3};
-    System.out.println(sol(nums));
+    System.out.println(findDuplicates(nums));
   }
 
   public static List<Integer> sol(int[] input) {

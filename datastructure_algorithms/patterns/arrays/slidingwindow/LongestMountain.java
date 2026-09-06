@@ -57,7 +57,7 @@ public class LongestMountain {
 
   public static void main(String[] args) {
     int[] A = {0, 1, 2, 3, 4, 5, 4, 3, 2, 1, 0};
-    System.out.println("Longest mountain length: " + sol(A));
+    System.out.println("Longest mountain length: " + longestMountain(A));
   }
 
   public static int sol(int[] input) {

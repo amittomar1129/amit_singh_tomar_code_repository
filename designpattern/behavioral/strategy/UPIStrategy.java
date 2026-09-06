@@ -1,6 +1,6 @@
 package designpattern.behavioral.strategy;
 
-public class UPIStrategy implements PaymentStrategy<Double> {
+public class UPIStrategy implements PaymentStrategy {
 
   private String upiId;
   private String pin;
@@ -14,7 +14,7 @@ public class UPIStrategy implements PaymentStrategy<Double> {
   }
 
   @Override
-  public void pay(Double amount) {
+  public void pay(double amount) {
     // Logic to pay
     System.out.println("processing info .... " + upiId + pin);
     System.out.println(amount + " paid with upi");

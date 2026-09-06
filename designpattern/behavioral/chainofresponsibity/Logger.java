@@ -1,6 +1,6 @@
 package designpattern.behavioral.chainofresponsibity;
 
-public abstract class AbstractLogger {
+public abstract class Logger {
 
   public static final int INFO = 1;
   public static final int DEBUG = 2;
@@ -9,9 +9,9 @@ public abstract class AbstractLogger {
   protected int level;
 
   // next element in chain or responsibility
-  protected AbstractLogger nextLogger;
+  protected Logger nextLogger;
 
-  public void setNextLogger(AbstractLogger nextLogger) {
+  public void setNextLogger(Logger nextLogger) {
     this.nextLogger = nextLogger;
   }
 
@@ -25,5 +25,4 @@ public abstract class AbstractLogger {
   }
 
   protected abstract void write(String message);
-
 }

@@ -23,26 +23,23 @@ package datastructure_algorithms.patterns.strings.twopointer;
 
 public class LongestPalindromicSubstringHARD {
 
-  public static String longestPalindrome(String s) {
-    if (s == null || s.length() < 1) {
-      return "";
-    }
-
+//  "babad"
+  public static String longestPalindrome(String input) {
     int start = 0, end = 0;
-    for (int i = 0; i < s.length(); i++) {
-      int len1 = expandFromCenter(s, i, i);     // odd length
-      int len2 = expandFromCenter(s, i, i + 1); // even length
+    for (int i = 0; i < input.length(); i++) {
+      int len1 = expandFromCenter(input, i, i);     // odd length
+      int len2 = expandFromCenter(input, i, i + 1); // even length
       int len = Math.max(len1, len2);
       if (len > end - start) {
         start = i - (len - 1) / 2;  // update start index
         end = i + len / 2;          // update end index
       }
     }
-    return s.substring(start, end + 1);
+    return input.substring(start, end + 1);
   }
 
-  private static int expandFromCenter(String s, int left, int right) {
-    while (left >= 0 && right < s.length() && s.charAt(left) == s.charAt(right)) {
+  private static int expandFromCenter(String input, int left, int right) {
+    while (left >= 0 && right < input.length() && input.charAt(left) == input.charAt(right)) {
       left--;
       right++;
     }
@@ -109,7 +106,7 @@ public class LongestPalindromicSubstringHARD {
 //      #a#b#a#
 //      #a#b#b#a#
 //      Every palindrome has a single center. Even and odd palindromes are handled the same.
-    System.out.println(longestPalindromeManacher(s));
+//    System.out.println(longestPalindromeManacher(s));
   }
 
 }

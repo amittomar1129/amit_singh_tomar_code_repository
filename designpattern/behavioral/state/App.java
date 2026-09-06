@@ -16,7 +16,6 @@ public class App {
 
 	//	Advantage:
 	//		It keeps the state-specific behavior.
-	//		It makes any state transitions explicit.
 	//		The State pattern minimizes conditional complexity, eliminating the need for if and switch statements in objects that have 
 	//		different behavior requirements.
 

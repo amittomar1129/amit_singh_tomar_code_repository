@@ -4,8 +4,6 @@ public class App {
 
 //	Definition:
 //	The Tell, Don't Ask Principle, To delegate an action to an object instead of asking an object for data.
-//	Data encapsulated within a class should be the responsibility of its class instead of being
-//	passed to another class to process it.
 //	When you apply this principle correctly, your programs can achieve better modularity and have a clear separation of concerns.
 
 //	They are not the same, but Tell Don’t Ask is a practical application of the Objects vs Data Structures principle.

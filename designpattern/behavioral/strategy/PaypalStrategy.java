@@ -1,6 +1,6 @@
 package designpattern.behavioral.strategy;
 
-public class PaypalStrategy implements PaymentStrategy<Double>{
+public class PaypalStrategy implements PaymentStrategy {
 	
 	private String emailId;
 	private String password;
@@ -14,7 +14,7 @@ public class PaypalStrategy implements PaymentStrategy<Double>{
 	}
 	
 	@Override
-	public void pay(Double amount) {
+	public void pay(double amount) {
 		// Logic to pay
 		System.out.println("processing info .... "+emailId+password);
 		System.out.println(amount +" paid with paypal");

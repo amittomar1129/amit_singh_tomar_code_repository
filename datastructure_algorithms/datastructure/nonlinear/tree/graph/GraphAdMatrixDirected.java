@@ -160,11 +160,11 @@ public final class GraphAdMatrixDirected {
     dfs(0, visited);
   }
 
-  private void dfs(int startIndex, boolean[] visited) {
-    visited[startIndex] = true;
-    System.out.print(startIndex + ", ");
+  private void dfs(int index, boolean[] visited) {
+    visited[index] = true;
+    System.out.print(index + ", ");
     for (int i = 0; i < vertices; i++) {
-      if (matrix[startIndex][i] != 0 && !visited[i]) {
+      if (matrix[index][i] != 0 && !visited[i]) {
         dfs(i, visited);
       }
     }
@@ -248,12 +248,12 @@ public final class GraphAdMatrixDirected {
       }
     }
     while (!queue.isEmpty()) {
-      Integer i = queue.poll();
-      System.out.print(i + ", ");
+      Integer node = queue.poll();
+      System.out.print(node + ", ");
       visited++;
-      for (int j = 0; j < matrix.length; j++) {
-        if (matrix[i][j] == 1 && --inDegrees[j] == 0) {
-          queue.offer(j);
+      for (int i = 0; i < matrix.length; i++) {
+        if (matrix[node][i] == 1 && --inDegrees[i] == 0) {
+          queue.offer(i);
         }
       }
     }
@@ -381,7 +381,7 @@ public final class GraphAdMatrixDirected {
     System.out.print(graph);
     graph.topologicalSortUsingDfs();
     System.out.println();
-    graph.topologicalSortUsingBfs();
+    graph.topologicalSortUsingBfs(); // Kahn`s Algorithm
     System.out.println("\n-------------------------------------------------------");
     GraphAdMatrixDirected graph1 = new GraphAdMatrixDirected(6);
     graph1.addEdge(0, 1, 5);

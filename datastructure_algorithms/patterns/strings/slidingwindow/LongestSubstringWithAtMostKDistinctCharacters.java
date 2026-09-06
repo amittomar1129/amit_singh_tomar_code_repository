@@ -39,8 +39,8 @@ public class LongestSubstringWithAtMostKDistinctCharacters {
     int distinct = 0;
     int maxLength = 0;
 
-    for (int right = 0; right < string.length(); right++) {
-      int ch = string.charAt(right) - 'a';
+    for (int i = 0; i < string.length(); i++) {
+      int ch = string.charAt(i) - 'a';
       if (count[ch] == 0) {
         distinct++;
       }
@@ -54,7 +54,7 @@ public class LongestSubstringWithAtMostKDistinctCharacters {
         }
         left++;
       }
-      maxLength = Math.max(maxLength, right - left + 1);
+      maxLength = Math.max(maxLength, i - left + 1);
     }
 
     return maxLength;

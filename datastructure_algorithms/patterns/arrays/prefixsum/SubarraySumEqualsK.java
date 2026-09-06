@@ -49,8 +49,8 @@ public class SubarraySumEqualsK {
     int[] nums1 = {3, 3, 3, 3, 3, 3};
     int k1 = 6;
 
-    System.out.println("Total subarrays with sum = k -> " + sol(nums, k));
-    System.out.println("Total subarrays with sum = k -> " + sol(nums1, k1));
+    System.out.println("Total subarrays with sum = k -> " + subarraySum(nums, k));
+    System.out.println("Total subarrays with sum = k -> " + subarraySum(nums1, k1));
   }
 
 

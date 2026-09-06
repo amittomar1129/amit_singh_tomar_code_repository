@@ -1,6 +1,6 @@
 package designpattern.behavioral.strategy;
 
-public interface PaymentStrategy<T extends Number> {
+public interface PaymentStrategy {
 	
-	void pay(T amount);
+	void pay(double amount);
 }

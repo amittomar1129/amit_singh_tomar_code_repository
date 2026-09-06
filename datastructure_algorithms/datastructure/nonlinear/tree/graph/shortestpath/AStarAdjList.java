@@ -104,24 +104,24 @@ public class AStarAdjList {
 
     while (!queue.isEmpty()) {
       int[] element = queue.poll();
-      int i = element[0];
-      if (visited[i]) {
+      int node = element[0];
+      if (visited[node]) {
         continue;
       }
-      visited[i] = true;
-      if (i == destination) {
+      visited[node] = true;
+      if (node == destination) {
         buildResult(source, destination, parent, result);
         System.out.println("Total Cost: " + element[1]);
       }
-      for (Edge edge : adj.get(i)) {
+      for (Edge edge : adj.get(node)) {
         if (edge.getWeight() < 0) {
           throw new IllegalArgumentException("A* does not support negative weights");
         }
         if (edge.getWeight() != 0 && !visited[edge.getTo()]
-            && distance[i] != Integer.MAX_VALUE
-            && distance[edge.getTo()] > distance[i] + edge.getWeight()) {
-          distance[edge.getTo()] = distance[i] + edge.getWeight();
-          parent[edge.getTo()] = i;
+            && distance[node] != Integer.MAX_VALUE
+            && distance[edge.getTo()] > distance[node] + edge.getWeight()) {
+          distance[edge.getTo()] = distance[node] + edge.getWeight();
+          parent[edge.getTo()] = node;
           queue.offer(new int[]{edge.getTo(), distance[edge.getTo()] + heuristics[edge.getTo()]});
         }
       }

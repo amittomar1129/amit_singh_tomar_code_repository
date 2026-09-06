@@ -27,9 +27,21 @@ public class App {
 	
 	public static void main(String[] args) {
 
-		Vehicle vehicle1 = new Car(new Produce(), new Assemble());
-		vehicle1.manufacture();
-		Vehicle vehicle2 = new Bike(new Produce(), new Assemble());
-		vehicle2.manufacture();
+		TV sony = new SonyTV();
+
+		Remote remote1 = new BasicRemote(sony);
+
+		remote1.power();
+		remote1.setChannel(10);
+
+		System.out.println();
+
+		TV samsung = new SamsungTV();
+
+		AdvancedRemote remote2 = new AdvancedRemote(samsung);
+
+		remote2.power();
+		remote2.setChannel(55);
+		remote2.mute();
 	}
 }

@@ -59,29 +59,7 @@ public class MeetingRooms {
       {15, 20}
     };
     MeetingRooms meetingRooms = new MeetingRooms();
-    int result = meetingRooms.sol(intervals);
+    int result = meetingRooms.minMeetingRooms(intervals);
     System.out.println("Minimum number of conference rooms required: " + result);
-  }
-
-  public int sol(int[][] interval) {
-    Arrays.sort(interval, (a, b) -> a[0] - b[0]);
-    int result = 1;
-    int start = interval[0][0];
-    int end = interval[0][1];
-
-    for(int i = 1; i < interval.length; i++) {
-      int curStart = interval[i][0];
-      int curEnd = interval[i][1];
-
-      if (curStart < end) {
-        result++;
-        end = curEnd;
-      } else {
-        start = interval[i][0];
-        end = interval[i][1];
-      }
-    }
-
-    return result;
   }
 }

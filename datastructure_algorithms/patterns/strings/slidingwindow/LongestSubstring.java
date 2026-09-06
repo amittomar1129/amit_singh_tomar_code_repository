@@ -34,15 +34,15 @@ public class LongestSubstring {
     int left = 0;
     int maxLen = 0;
     // right pointer moves using for loop
-    for (int right = 0; right < string.length(); right++) {
-      char currChar = string.charAt(right);
+    for (int i = 0; i < string.length(); i++) {
+      char currChar = string.charAt(i);
       // If duplicate found, remove from left
       while (set.contains(currChar)) {
         set.remove(string.charAt(left));
         left++;
       }
       set.add(currChar);
-      maxLen = Math.max(maxLen, right - left + 1);
+      maxLen = Math.max(maxLen, i - left + 1);
     }
     return maxLen;
   }

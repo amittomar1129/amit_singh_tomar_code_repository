@@ -12,8 +12,6 @@ package distributedsystem;
 
 //  Every microservices system is a distributed system, but not every distributed system is a microservices architecture.
 
-//  “Microservices are an architectural style built on top of distributed systems principles optimizing for organizational scalability.”
-
 //  Most outages in microservices are not caused by business logic bugs, but by distributed system failures that
 //  were not explicitly designed for.
 

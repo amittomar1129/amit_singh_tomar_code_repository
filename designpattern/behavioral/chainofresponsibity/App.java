@@ -41,23 +41,22 @@ public class App {
 //	Here’s the best part: a handler can decide not to pass the request further down the chain and effectively stop any further processing.
 
 	public static void main(String[] args) {
-		AbstractLogger loggerChain = getChainOfLoggers();
+		Logger loggerChain = getLogger();
 
-		loggerChain.logMessage(AbstractLogger.INFO, "This is an information.");
-		loggerChain.logMessage(AbstractLogger.DEBUG, "This is an debug level information.");
-		loggerChain.logMessage(AbstractLogger.ERROR, "This is an error information.");
+		loggerChain.logMessage(Logger.INFO, "This is an information.");
+		loggerChain.logMessage(Logger.DEBUG, "This is an debug level information.");
+		loggerChain.logMessage(Logger.ERROR, "This is an error information.");
 	}
 
-	private static AbstractLogger getChainOfLoggers() {
+	private static Logger getLogger() {
 
-		AbstractLogger errorLogger = new ErrorLogger(AbstractLogger.ERROR);
-		AbstractLogger debugLogger = new DebugLogger(AbstractLogger.DEBUG);
-		AbstractLogger infoLogger = new InfoLogger(AbstractLogger.INFO);
+		Logger errorLogger = new ErrorLogger(Logger.ERROR);
+		Logger debugLogger = new DebugLogger(Logger.DEBUG);
+		Logger infoLogger = new InfoLogger(Logger.INFO);
 
 		errorLogger.setNextLogger(debugLogger);
 		debugLogger.setNextLogger(infoLogger);
 
 		return errorLogger;
 	}
-
 }

@@ -1,6 +1,6 @@
 package designpattern.behavioral.strategy;
 
-public class CreditCardStrategy implements PaymentStrategy<Double>{
+public class CreditCardStrategy implements PaymentStrategy{
 
 	private String name;
 	private String cardNumber;
@@ -20,7 +20,7 @@ public class CreditCardStrategy implements PaymentStrategy<Double>{
 	
 	
 	@Override
-	public void pay(Double amount) {
+	public void pay(double amount) {
 		// Logic to pay
 		System.out.println("processing info .... "+name+cardNumber+cvv+dateOfExpiry);
 		System.out.println(amount +" paid with credit/debit card");

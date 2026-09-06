@@ -221,13 +221,13 @@ public class BellManFordAdjMatrix {
     Arrays.fill(parent, -1);
     distance[source] = 0;
 
-    for (int i = 0; i < vertices - 1; i++) {
-      for (int j = 0; j < vertices; j++) {
-        for (int k = 0; k < vertices; k++) {
-          if (matrix[j][k] != Integer.MAX_VALUE && distance[j] != Integer.MAX_VALUE
-              && distance[j] + matrix[j][k] < distance[k]) {
-            distance[k] = distance[j] + matrix[j][k];
-            parent[k] = j;
+    for (int k = 0; k < vertices - 1; k++) {
+      for (int i = 0; i < vertices; i++) {
+        for (int j = 0; j < vertices; j++) {
+          if (matrix[i][j] != Integer.MAX_VALUE && distance[i] != Integer.MAX_VALUE
+              && distance[i] + matrix[i][j] < distance[j]) {
+            distance[j] = distance[i] + matrix[i][j];
+            parent[j] = i;
           }
         }
       }
@@ -242,8 +242,8 @@ public class BellManFordAdjMatrix {
           stack.push(j);
           int node = j;
           while (parent[node] != -1 && parent[node] != j) {
-            stack.push(parent[node]);
             node = parent[node];
+            stack.push(node);
           }
           stack.push(parent[node]);
           System.out.print("Negative Weight Cycle: ");

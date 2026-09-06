@@ -143,6 +143,35 @@ public class LongestCommonSubsequence {
     return sb.reverse().toString();
   }
 
+
+//  Find the longest subsequence of text1 that is also substring of text2.
+  public static int longestCommonSubsequenceVariation(String text1, String text2) {
+    int m = text1.length();
+    int n = text2.length();
+
+    int[][] dp = new int[m][n];
+    int[][] prefix = new int[m][n];
+
+    int answer = 0;
+
+    for(int i = 0; i < m; i++) {
+      for(int j = 0; j < n; j++) {
+        if(text1.charAt(i) == text2.charAt(j)) {
+          dp[i][j] = 1;
+          if (i > 0 && j > 0) {
+            dp[i][j] = prefix[i-1][j-1] + 1;
+          }
+          answer = Math.max(answer, dp[i][j]);
+        }
+        prefix[i][j] = dp[i][j];
+        if (i > 0) {
+          prefix[i][j] = Math.max(prefix[i][j], prefix[i-1][j]);
+        }
+      }
+    }
+    return answer;
+  }
+
   //  Time	O(m × n)
   //  Space	O(m × n)
   public static String shortestCommonSupersequence(String text1, String text2) {
@@ -354,13 +383,16 @@ public class LongestCommonSubsequence {
 
   public static void main(String[] args) {
     String text1 = "abcde";
-    String text2 = "ace";
+    String text2 = "acfe";
 
     int result = longestCommonSubsequence(text1, text2);
     System.out.println("LCS length (O(n) space) -> " + result);
 
     String result1 = getLongestCommonSubsequence(text1, text2);
     System.out.println("LCS -> " + result1);
+
+    int resultVar = longestCommonSubsequenceVariation(text1, text2);
+    System.out.println("LCS Variation length (O(n) space) -> " + resultVar);
 
     String result2 = shortestCommonSupersequence("abac", "cab");
     System.out.println("Shortest common super sequence -> " + result2);

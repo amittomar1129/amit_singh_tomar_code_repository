@@ -32,18 +32,18 @@ public class LongestRepeatingCharacter {
     int maxFreq = 0;
     int maxLen = 0;
 //  AABABBA
-    for (int right = 0; right < s.length(); right++) {
-      char c = s.charAt(right);
+    for (int i = 0; i < s.length(); i++) {
+      char c = s.charAt(i);
       count[c - 'A']++;
       // track max frequency in current window
       maxFreq = Math.max(maxFreq, count[c - 'A']);
       // if replacements needed > k, shrink window
-      if (right - left + 1 - maxFreq > k) {
+      if (i - left + 1 - maxFreq > k) {
         count[s.charAt(left) - 'A']--;
         left++;
       }
 
-      maxLen = Math.max(maxLen, right - left + 1);
+      maxLen = Math.max(maxLen, i - left + 1);
     }
 
     return maxLen;

@@ -26,6 +26,7 @@ public class SequentialColoring {
           String.format("Edge index beyond the vertices size: [%s]", vertices));
     }
     Edge newEdge = new Edge(j);
+    newEdge.setFrom(i);
     if (!adj.get(i).contains(newEdge)) {
       adj.get(i).add(newEdge);
     }
@@ -101,14 +102,12 @@ public class SequentialColoring {
 
     for (int i = 0; i < vertices; i++) {
       boolean[] used = new boolean[vertices]; // max V colors possible
-
       // Mark colors used by neighbors
       for (Edge edge : adj.get(i)) {
         if (colors[edge.getTo()] != -1) {
           used[colors[edge.getTo()]] = true;
         }
       }
-
       // Assign the smallest available color
       for (int j = 0; j < vertices; j++) {
         if (!used[j]) {

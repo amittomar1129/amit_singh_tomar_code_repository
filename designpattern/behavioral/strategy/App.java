@@ -47,19 +47,19 @@ public class App {
 		shoppingCart.addItem(p1);
 		shoppingCart.addItem(p2);
 
-		PaymentStrategy<Double> creditCardStrategy = new CreditCardStrategy("Amit Singh Tomar", "2850 3654 2485 2214", "695", "1225");
+		PaymentStrategy creditCardStrategy = new CreditCardStrategy("Amit Singh Tomar", "2850 3654 2485 2214", "695", "1225");
 
 		shoppingCart.selectStrategy(creditCardStrategy);
 		shoppingCart.processPayment(); // processing payment according to CreditCard Strategy
 
-		PaymentStrategy<Double> paypalStrategy = new PaypalStrategy("91.amittomar@gmail.com", "password_xyz");
+		PaymentStrategy paypalStrategy = new PaypalStrategy("91.amittomar@gmail.com", "password_xyz");
 		shoppingCart.changeStrategy(paypalStrategy);
 		shoppingCart.processPayment(); // processing payment according to Paypal Strategy
 
-		ShoppingCart<Double> cart = new ShoppingCart<Double>();
+		ShoppingCart cart = new ShoppingCart();
 		cart.addItem(p2);
 
-		PaymentStrategy<Double> upiStrategy = new UPIStrategy("9386654253@ybl", "1234");
+		PaymentStrategy upiStrategy = new UPIStrategy("9386654253@ybl", "1234");
 		cart.selectStrategy(upiStrategy);
 		cart.processPayment();
 	}

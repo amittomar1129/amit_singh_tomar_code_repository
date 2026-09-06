@@ -223,6 +223,6 @@ public final class GraphAdMatrix {
     graph.dfsUsingStack();
     System.out.println();
     graph.bfs();
-//    graph.getAllPossibleRoutes(0, 3);
+    graph.getAllPossibleRoutes(0, 3);
   }
 }

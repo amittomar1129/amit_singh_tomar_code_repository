@@ -36,6 +36,6 @@ public class Node {
 //      boolean isEnd1 = entry.getValue().isEnd();
 //      builder.append(key).append(" ").append(isEnd1).append(" ").append(value);
 //    }
-    return children.entrySet().toString() + isEnd;
+    return isEnd ? children.entrySet().toString() + isEnd : children.entrySet().toString();
   }
 }

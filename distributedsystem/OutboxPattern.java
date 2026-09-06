@@ -2,8 +2,8 @@ package distributedsystem;
 
 //  Outbox Pattern:
 
-//  The Outbox Pattern ensures reliable event publishing in a microservices system without using distributed transactions.
-//  It processes database update and event publication happen atomically from the service’s point of view.
+//  The Outbox Pattern processes database update and event publication happen atomically from the
+//  service’s point of view without using distributed transactions
 //  If data is committed, the event will eventually be published — no lost events, no double writes.
 
 //  The “Dual Write” Problem without Outbox pattern:
