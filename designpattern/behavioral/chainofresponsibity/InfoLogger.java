@@ -1,7 +1,7 @@
 package designpattern.behavioral.chainofresponsibity;
 
 public class
-InfoLogger extends AbstractLogger {
+InfoLogger extends Logger {
 
 	public InfoLogger(int level) {
 		this.level = level;

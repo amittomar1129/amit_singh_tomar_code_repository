@@ -224,8 +224,6 @@ Better throughput
 
 2. Structured Concurrency (Preview): One of the most important modern concurrency features.
 Structured Concurrency is a concept of dividing a task into subtasks and processing them concurrently.
-Structured concurrency introduces parent-child lifecycle for concurrent tasks, enabling failure propagation,
- cancellation, and scoped task ownership, making concurrent code easier to reason about and safer.
 
 Purpose:
 Manage concurrent tasks with:

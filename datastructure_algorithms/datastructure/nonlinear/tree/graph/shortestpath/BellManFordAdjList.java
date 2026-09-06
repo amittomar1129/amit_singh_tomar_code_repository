@@ -71,7 +71,7 @@ public class BellManFordAdjList {
     for (int i = 0; i < vertices - 1; i++) {
       for (Edge edge : adj) {
         if (distance[edge.getTo()] > distance[edge.getFrom()] + edge.getWeight()) {
-          printNegativeCycle(edge.getFrom(), edge.getTo(), parent, negativeCycle);
+          prepareNegativeCycle(edge.getFrom(), edge.getTo(), parent, negativeCycle);
           negativeCycle.offer(edge.getTo());
           System.out.print("Negative Cycle: ");
           while (!negativeCycle.isEmpty()) {
@@ -94,23 +94,23 @@ public class BellManFordAdjList {
     return distance;
   }
 
-  private String printPath(int destination, int[] parent) {
-    if (destination == 0) {
-      return destination + "";
+  private String printPath(int node, int[] parent) {
+    if (node == 0) {
+      return node + "";
     }
 
-    String path = printPath(parent[destination], parent);
+    String path = printPath(parent[node], parent);
 
-    return path + ", " + destination;
+    return path + ", " + node;
   }
 
-  private void printNegativeCycle(int source, int destination, int[] parent, Queue<Integer> queue) {
+  private void prepareNegativeCycle(int source, int destination, int[] parent, Queue<Integer> queue) {
     if (source == destination) {
       queue.offer(source);
       return;
     }
 
-    printNegativeCycle(parent[source], destination, parent, queue);
+    prepareNegativeCycle(parent[source], destination, parent, queue);
     queue.offer(source);
   }
 

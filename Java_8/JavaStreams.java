@@ -141,6 +141,25 @@ public class JavaStreams {
 
   public static void main(String[] args) {
 
+    // Find Minimum character length word from the list
+    ArrayList<String> list = new ArrayList();
+    list.add("Amit");
+    list.add("Ram");
+    list.add("Suresh");
+    list.add("JP Morgan");
+    list.add("Google");
+    list.add("Shyam");
+
+    Map.Entry<String, Integer> stringIntegerEntry = list.stream()
+        .collect(Collectors.toMap(ele -> ele, v -> v.length())).entrySet().stream()
+        .min((entry1, entry2) -> entry1.getValue().compareTo(entry2.getValue())).get();
+
+    String minWord = list.stream()
+        .min((a, b) -> Integer.compare(a.length(), b.length()))
+        .orElse(null);
+
+    System.out.println(minWord);
+
     //  First non-repeated character in a string:
 
     String str = "aabbcccdllmafllaa";

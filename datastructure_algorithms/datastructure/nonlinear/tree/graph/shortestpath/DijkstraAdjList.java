@@ -110,7 +110,7 @@ public class DijkstraAdjList {
 
     System.out.println("Shortest Distance from 0:");
     for (int i = 0; i < distance.length; i++) {
-      if (distance[i] == -1) {
+      if (distance[i] == Integer.MAX_VALUE) {
         System.out.println(i + ": INF" + ", Path: " + printPath(i, parent));
       } else {
         System.out.println(i + ": " + distance[i] + ", Path: " + printPath(i, parent));

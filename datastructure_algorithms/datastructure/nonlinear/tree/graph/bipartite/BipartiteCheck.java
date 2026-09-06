@@ -106,12 +106,12 @@ public class BipartiteCheck {
     color[node] = 0;
 
     while (!queue.isEmpty()) {
-      Integer current = queue.poll();
-      for (Edge edge : adj.get(current)) {
+      Integer i = queue.poll();
+      for (Edge edge : adj.get(i)) {
         if (color[edge.getTo()] == -1) {
-          color[edge.getTo()] = 1 - color[current];
+          color[edge.getTo()] = 1 - color[i];
           queue.offer(edge.getTo());
-        } else if (color[current] == color[edge.getTo()]) {
+        } else if (color[i] == color[edge.getTo()]) {
           return false;
         }
       }

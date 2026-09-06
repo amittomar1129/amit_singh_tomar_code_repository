@@ -63,7 +63,7 @@ package distributedsystem;
 
 //  3. Least Connections: Route traffic to the server with the fewest active connections.
 
-//  4. Least Response Time / Least Latency: Send requests to the server with lowest observed latency
+//  4. Least Latency: Send requests to the server with lowest observed latency
 // + fewest connections.
 //  Used in AWS ALB, Google Global LB.
 
@@ -89,31 +89,5 @@ package distributedsystem;
 //  -> DNS Load Balancing (GeoDNS): Return nearest IP based on user’s location.
 //  -> Anycast Routing: All regions advertise the same IP via BGP, network routes to nearest.
 //  -> Global LB with Health Checks: Route traffic only to healthy regions.
-
-
-
-
-
-
-//  Reverse proxy (web server): A reverse proxy is a web server that centralizes internal services
-//  and provides unified interfaces to the public. Requests from clients are forwarded to a server
-//  that can fulfill it before the reverse proxy returns the server's response to the client.
-
-//  A Reverse Proxy is a server that sits between clients and backend servers.
-//  Clients send requests to the reverse proxy, and the proxy forwards them to internal servers.
-
-
-//  A reverse proxy provides: It becomes the entry point to your application.
-//
-//  Load balancing
-//  SSL termination
-//  Security
-//  Caching
-//  Compression
-//  Authentication
-//  Request routing
-//  Rate limiting
-
-//  An API Gateway is actually a specialized type of reverse proxy designed specifically for APIs and microservices.
 
 public class LoadBalancingStrategies {}

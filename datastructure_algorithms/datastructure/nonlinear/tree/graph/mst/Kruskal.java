@@ -100,8 +100,9 @@ public class Kruskal {
   }
 
   public List<Edge> kruskalMST() {
-    boolean[][] visited = new boolean[vertices][vertices];
+    List<Edge> result = new ArrayList<>();
     List<Edge> edges = new ArrayList<>();
+    boolean[][] visited = new boolean[vertices][vertices];
 
     for (int i = 0; i < vertices; i++) {
       for (Edge edge : adj.get(i)) {
@@ -113,7 +114,6 @@ public class Kruskal {
     }
 
     Collections.sort(edges); // sort edges by weight
-    List<Edge> result = new ArrayList<>();
 
     for (Edge edge : edges) {
       if (union(edge.getFrom(), edge.getTo())) {

@@ -8,9 +8,7 @@ public class HeapUsingNode<E extends Comparable> implements Heap<E> {
   private Node<E> root;
   private static int size;
 
-  /**
-   *
-   */
+  /** */
   @Override
   public void insert(E element) {
     Node<E> newNode = new Node<>(element);
@@ -19,28 +17,28 @@ public class HeapUsingNode<E extends Comparable> implements Heap<E> {
       size++;
       return;
     }
-    Queue<Node<E>> queue = new LinkedList<Node<E>>();
+    Queue<Node<E>> queue = new LinkedList<>();
     queue.offer(root);
-    size++;
+
     while (!queue.isEmpty()) {
-      Node<E> node = queue.poll();
-      if (node.left == null) {
-        node.left = newNode;
-        newNode.parent = node;
-        heapifyUp(newNode);
+      Node<E> current = queue.poll();
+      if (current.left == null) {
+        current.left = newNode;
+        newNode.parent = current;
         break;
       } else {
-        queue.offer(node.left);
+        queue.offer(current.left);
       }
-      if (node.right == null) {
-        node.right = newNode;
-        newNode.parent = node;
-        heapifyUp(newNode);
+      if (current.right == null) {
+        current.right = newNode;
+        newNode.parent = current;
         break;
       } else {
-        queue.offer(node.right);
+        queue.offer(current.right);
       }
     }
+    heapifyUp(newNode);
+    size++;
   }
 
   private void heapifyUp(Node<E> node) {
@@ -52,10 +50,7 @@ public class HeapUsingNode<E extends Comparable> implements Heap<E> {
     }
   }
 
-
-  /**
-   *
-   */
+  /** */
   @Override
   public E remove() {
     if (size == 0) {
@@ -113,9 +108,7 @@ public class HeapUsingNode<E extends Comparable> implements Heap<E> {
     return lastElement;
   }
 
-  /**
-   *
-   */
+  /** */
   @Override
   public boolean remove(E element) {
     if (size == 0) {
@@ -197,30 +190,30 @@ public class HeapUsingNode<E extends Comparable> implements Heap<E> {
     heap.insert(45);
     System.out.println(heap);
 
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap);
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap);
 
     System.out.println(heap.remove(35));
     System.out.println(heap);
     System.out.println(heap.remove(45));
     System.out.println(heap);
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap.remove());
-//    System.out.println(heap);
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap.remove());
+    //    System.out.println(heap);
 
   }
 }

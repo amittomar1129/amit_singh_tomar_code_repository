@@ -11,13 +11,24 @@ package sqldatabase;
 //  COMMIT: “Make my changes permanent and visible to others.” Until you COMMIT, your changes are visible only to you.
 //  Can be undone using ROLLBACK.
 
-//  ISOLATION LEVEL: Isolation level defines how much one transaction can see another transaction’s data while both are running.
-//  “How isolated should my transaction be from others?”
+//  ISOLATION LEVEL: Isolation level defines how much one transaction can see another transaction’s data
+//  while both are running. “How isolated should my transaction be from others?”
 //  Problems Isolation Levels Try to Prevent:
+
 //  Problem	                        Meaning
-//  Dirty Read                -     Read uncommitted data
-//  Non-Repeatable Read       -     Same query gives different result
-//  Phantom Read	            -     New rows appear suddenly
+//  Dirty Read                -
+//  A dirty read occurs when one transaction reads data that has been modified by another transaction
+//  but has not yet been committed. If the first transaction rolls back, the second transaction has
+//  read data that never actually existed as committed data.
+
+//  Non-Repeatable Read       -
+//  A non-repeatable read occurs when a transaction reads the same row twice within the same transaction,
+//  but gets different values because another transaction committed an update between the two reads.
+
+//  Phantom Read	            -
+//  A phantom read occurs when a transaction executes the same query twice, but the second execution
+//  returns a different set of rows because another transaction inserted, deleted, or modified rows
+//  that match the query condition and committed the change.
 
 //  The 4 SQL Isolation Levels:
 //  1. READ UNCOMMITTED (Lowest): Can read uncommitted data, Fast but unsafe.

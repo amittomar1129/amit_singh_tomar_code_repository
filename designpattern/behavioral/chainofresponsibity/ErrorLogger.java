@@ -1,6 +1,6 @@
 package designpattern.behavioral.chainofresponsibity;
 
-public class ErrorLogger extends AbstractLogger {
+public class ErrorLogger extends Logger {
 
 	public ErrorLogger(int level) {
 		this.level = level;

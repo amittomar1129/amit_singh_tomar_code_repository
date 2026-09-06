@@ -9,12 +9,12 @@ public class App {
 //	without affecting other objects.
 
 //	Advantage:
-//		It dThis comefines class hierarchies that contain primitive and complex objects.
-////		Provides flexible structure with manageable class or interface and easier to add new kinds of components.
-//
-  ////	Disadvantages:
-  ////  	Simplifies client code, it can introduce complexity in the implementation of composite objects (composites).
-  ////		plexity can make the code harder to maintain.
+//		It defines class hierarchies that contain primitive and complex objects.
+//		Provides flexible structure with manageable class or interface and easier to add new kinds of components.
+
+//	Disadvantages:
+  //  	Simplifies client code, it can introduce complexity in the implementation of composite objects (composites).
+  //		complexity can make the code harder to maintain.
 
 //	Problem:
 //	Using the Composite pattern makes sense only when the core model of your app can be represented as a tree.

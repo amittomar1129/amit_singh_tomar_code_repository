@@ -20,45 +20,22 @@ package datastructure_algorithms.patterns.priorityqueue.find;
 //  Space -> O(1)
 
 
+import java.util.PriorityQueue;
+
 public class KthLargestElement {
 
   public static int findKthLargest(int[] nums, int k) {
-    int targetIndex = nums.length - k;
-    return quickSelect(nums, 0, nums.length - 1, targetIndex);
-  }
+    PriorityQueue<Integer> minHeap = new PriorityQueue<>();
 
-//  {3, 2, 1, 5, 6, 4}
-  private static int quickSelect(int[] input, int left, int right, int k) {
-    if (left == right) {
-      return input[left];
-    }
-    int pivotIndex = partition(input, left, right);
-    if (k == pivotIndex) {
-      return input[k];
-    } else if (k < pivotIndex) {
-      return quickSelect(input, left, pivotIndex - 1, k);
-    } else {
-      return quickSelect(input, pivotIndex + 1, right, k);
-    }
-  }
+    for (int num : nums) {
+      minHeap.offer(num);
 
-  private static int partition(int[] input, int left, int right) {
-    int pivot = input[right];
-    int i = left;
-    for (int j = left; j < right; j++) {
-      if (input[j] <= pivot) {
-        swap(input, i, j);
-        i++;
+      if (minHeap.size() > k) {
+        minHeap.poll();
       }
     }
-    swap(input, i, right);
-    return i;
-  }
 
-  private static void swap(int[] nums, int i, int j) {
-    int temp = nums[i];
-    nums[i] = nums[j];
-    nums[j] = temp;
+    return minHeap.peek();
   }
 
   // main method

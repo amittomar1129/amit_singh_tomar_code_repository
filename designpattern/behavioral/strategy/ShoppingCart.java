@@ -6,7 +6,7 @@ import java.util.List;
 public class ShoppingCart<T extends Number> {
 
   List<Product> products;
-  PaymentStrategy<T> paymentStrategy;
+  PaymentStrategy paymentStrategy;
 
   public ShoppingCart() {
     products = new ArrayList<Product>();
@@ -20,17 +20,17 @@ public class ShoppingCart<T extends Number> {
     products.remove(item);
   }
 
-  public void selectStrategy(PaymentStrategy<T> strategy) {
+  public void selectStrategy(PaymentStrategy strategy) {
     this.paymentStrategy = strategy;
   }
 
-  public void changeStrategy(PaymentStrategy<T> strategy) {
+  public void changeStrategy(PaymentStrategy strategy) {
     this.paymentStrategy = strategy;
   }
 
-  private T calculateAmount() {
+  private double calculateAmount() {
     Double amount = this.products.stream().mapToDouble(l -> Double.parseDouble(l.getPrice())).sum();
-    return (T) amount;
+    return amount;
   }
 
   public void processPayment() {

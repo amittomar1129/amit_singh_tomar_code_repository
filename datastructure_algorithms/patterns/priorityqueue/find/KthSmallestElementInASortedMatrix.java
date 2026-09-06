@@ -49,9 +49,8 @@ public class KthSmallestElementInASortedMatrix {
     for (int i = 0; i < k; i++) {
       Node cur = minHeap.poll();
       result = cur.val;
-
       // push next element from same row
-      if (cur.col + 1 < matrix.length) {
+      if (cur.col + 1 < matrix[0].length) {
         minHeap.offer(new Node(matrix[cur.row][cur.col + 1], cur.row, cur.col + 1));
       }
     }

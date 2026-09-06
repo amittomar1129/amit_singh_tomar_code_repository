@@ -11,7 +11,6 @@ public class App {
 
 //	Advantage:
 //		It decouples the number of classes.
-//		It simplifies object protocols and centralizes the control.
 //		The individual components become simpler and much easier to deal with because they don't need to pass messages to one another.
 
 //	Disadvantages:
@@ -30,13 +29,13 @@ public class App {
 
 	public static void main(String[] args) {
 
-		ChatRoom chat = new ChatRoomImpl();
+		ChatRoom chatRoom = new ChatRoomImpl();
 
-		Participant u1 = new User1(chat);
+		Participant u1 = new User1(chatRoom);
 		u1.setname("Ashwani Rajput");
 		u1.sendMsg("Hi Ashwani! how are you?");
 
-		Participant u2 = new User2(chat);
+		Participant u2 = new User2(chatRoom);
 		u2.setname("Soono Jaiswal");
 		u2.sendMsg("I am Fine ! You tell?");
 	}

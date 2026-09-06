@@ -47,14 +47,14 @@ public class FindAllAnagrams {
     int needed = pattern.length();
 
     // Step 2: sliding window
-    for (int right = 0; right < string.length(); right++) {
-      char c = string.charAt(right);
+    for (int i = 0; i < string.length(); i++) {
+      char c = string.charAt(i);
       if (count[c - 'a'] > 0) {
         needed--;
       }
       count[c - 'a']--;
       // window size equals p length
-      if (right - left + 1 == pattern.length()) {
+      if (i - left + 1 == pattern.length()) {
         if (needed == 0) {
           result.add(left);
         }

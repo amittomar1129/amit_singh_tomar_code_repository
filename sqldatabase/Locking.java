@@ -34,6 +34,7 @@ package sqldatabase;
 //  3. Intent Locks (IS / IX): Why Intent Locks Exist, Problem: How can DB safely mix table-level locks and row-level locks?
 //  Without intent locks: Before locking table -> must scan all rows to check conflicts, Too slow. Solution: Intent Locks.
 //  Intent locks act as: "I plan to lock something inside this object".
+
 //  A lightweight lock placed on a higher level object to indicate that a transaction intends to acquire a lower-level lock.
 //  Intent lock always lives above the real lock.
 //  Intent Shared (IS): "I intend to take Shared (S) locks on rows"

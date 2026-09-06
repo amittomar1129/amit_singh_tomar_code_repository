@@ -174,21 +174,21 @@ public class AStarAdjMatrix {
     boolean[] visited = new boolean[vertices];
     while (!queue.isEmpty()) {
       int[] element = queue.poll();
-      int i = element[0];
-      if (visited[i]) {
+      int node = element[0];
+      if (visited[node]) {
         continue;
       }
-      visited[i] = true;
-      if (i == destination) {
+      visited[node] = true;
+      if (node == destination) {
         buildResult(source, destination, parent, result);
         System.out.println("Total Cost: " + element[1]);
       }
-      for (int j = 0; j < vertices; j++) {
-        if (!visited[j] && matrix[i][j] != 0 && distance[i] != Integer.MAX_VALUE
-            && distance[j] > distance[i] + matrix[i][j]) {
-          distance[j] = distance[i] + matrix[i][j];
-          parent[j] = i;
-          queue.offer(new int[]{j, distance[j] + heuristics[j]});
+      for (int i = 0; i < vertices; i++) {
+        if (!visited[i] && matrix[node][i] != 0 && distance[node] != Integer.MAX_VALUE
+            && distance[i] > distance[node] + matrix[node][i]) {
+          distance[i] = distance[node] + matrix[node][i];
+          parent[i] = node;
+          queue.offer(new int[]{i, distance[i] + heuristics[i]});
         }
       }
     }

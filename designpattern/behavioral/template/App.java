@@ -14,11 +14,9 @@ public class App {
 // javax.servlet.http.HttpServlet
 
 //	Advantages:
-//    There is no code duplication.
 //		Reusable Code with the Template Method pattern as it uses inheritance. Only a few methods need to be overridden.
 //    Flexibility lets subclasses decide how to implement steps in an algorithm.
 // 		Easy to implement and readable.
-//		Less impact of changes.
 //		Clean architecture - Parent class defines sequence to execute its methods
 
 //	Disadvantages:

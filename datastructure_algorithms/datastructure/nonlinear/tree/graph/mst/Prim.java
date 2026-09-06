@@ -3,7 +3,6 @@ package datastructure_algorithms.datastructure.nonlinear.tree.graph.mst;
 import datastructure_algorithms.datastructure.nonlinear.tree.graph.Edge;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.PriorityQueue;

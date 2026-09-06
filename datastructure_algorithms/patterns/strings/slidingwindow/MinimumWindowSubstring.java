@@ -43,8 +43,8 @@ public class MinimumWindowSubstring {
     int minLen = Integer.MAX_VALUE;
 
     // RIGHT pointer controlled by for-loop
-    for (int right = 0; right < string.length(); right++) {
-      char ch = string.charAt(right);
+    for (int i = 0; i < string.length(); i++) {
+      char ch = string.charAt(i);
       if (count[ch - 'A'] > 0) {
         needed--;
       }
@@ -52,8 +52,8 @@ public class MinimumWindowSubstring {
 
       // Try to shrink window from left
       while (needed == 0) {
-        if (right - left + 1 < minLen) {
-          minLen = right - left + 1;
+        if (i - left + 1 < minLen) {
+          minLen = i - left + 1;
           start = left;
         }
         char leftChar = string.charAt(left);

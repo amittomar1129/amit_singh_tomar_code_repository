@@ -9,7 +9,7 @@ package distributedsystem;
 
 //  Let’s go through each pattern.
 
-//  1. Cache Aside (Lazy Loading): App first checks cache ? if miss ? fetch from DB ? put in cache ?
+//  1. Cache Aside: App first checks cache ? if miss ? fetch from DB ? put in cache ?
 // return.
 //  Simple and widely used, Works well with read-heavy workloads.
 //  Stale data possible if DB updates but cache invalidation fails.

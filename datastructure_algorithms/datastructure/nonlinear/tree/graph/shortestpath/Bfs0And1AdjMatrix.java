@@ -176,16 +176,16 @@ public class Bfs0And1AdjMatrix {
     deque.offer(source);
 
     while (!deque.isEmpty()) {
-      Integer i = deque.pollFirst();
+      Integer node = deque.pollFirst();
 
-      for (int j = 0; j < vertices; j++) {
-        if (matrix[i][j] != -1 && distance[j] > distance[i] + matrix[i][j]) {
-          distance[j] = distance[i] + matrix[i][j];
-          parent[j] = i;
-          if (distance[i] + matrix[i][j] == 0) {
-            deque.offerFirst(j);
+      for (int i = 0; i < vertices; i++) {
+        if (matrix[node][i] != -1 && distance[i] > distance[node] + matrix[node][i]) {
+          distance[i] = distance[node] + matrix[node][i];
+          parent[i] = node;
+          if (distance[node] + matrix[node][i] == 0) {
+            deque.offerFirst(i);
           } else {
-            deque.offerLast(j);
+            deque.offerLast(i);
           }
         }
       }

@@ -4,13 +4,24 @@ package distributedsystem;
 
 //  Partitioning is a logical division of a database table into smaller pieces (partitions),
 //  but all partitions still live within the same database system (same server or cluster).
-//  To improves query performance and manageability
+//  To improves query performance and manageability.
+
 //  Example: A users table is partitioned by country:
 //
 //  Partition 1 -> US users
 //  Partition 2 -> India users
 //  Partition 3 -> UK users
 //  But all of this is still in the same database instance.
+
+
+
+
+
+
+
+
+
+
 
 //  Sharding means splitting data into smaller, independent segments,
 //  and distributing them across multiple servers/nodes. This is required when:
@@ -72,6 +83,16 @@ package distributedsystem;
 //  ? Pros: Super low latency, Compliance-friendly (GDPR), Reduce cross-region traffic
 //  ? Cons: Cross-region queries become slow, Complex failover strategies
 //  Eg. Facebook’s TAO, Uber (city-level sharding), Google Cloud Spanner (multi-region)
+
+
+
+
+
+
+
+
+
+
 
 
 //  Must-Know Concepts About Sharding:

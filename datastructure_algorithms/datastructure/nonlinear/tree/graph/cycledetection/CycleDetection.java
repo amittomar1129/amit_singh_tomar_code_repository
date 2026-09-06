@@ -173,13 +173,13 @@ public class CycleDetection {
 
   public List<Integer> detectCycleUsingDfs() {
     boolean[] visited = new boolean[vertices];
-    boolean[] recStack = new boolean[vertices];
+    boolean[] inStack = new boolean[vertices];
     int[] parent = new int[vertices];
     Arrays.fill(parent, -1);
 
     for (int i = 0; i < vertices; i++) {
       if (!visited[i]) {
-        List<Integer> cycle = dfs(i, visited, recStack, parent);
+        List<Integer> cycle = dfs(i, visited, inStack, parent);
         if (cycle != null) {
           return cycle;
         }
@@ -188,24 +188,23 @@ public class CycleDetection {
     return null; // no cycle
   }
 
-  public List<Integer> dfs(int node,
-      boolean[] visited, boolean[] recStack, int[] parent) {
+  public List<Integer> dfs(int node, boolean[] visited, boolean[] inStack, int[] parent) {
     visited[node] = true;
-    recStack[node] = true;
+    inStack[node] = true;
 
     for (Edge edge : adj.get(node)) {
       if (!visited[edge.getTo()]) {
         parent[edge.getTo()] = node;
-        List<Integer> cycle = dfs(edge.getTo(), visited, recStack, parent);
+        List<Integer> cycle = dfs(edge.getTo(), visited, inStack, parent);
         if (cycle != null) {
           return cycle;
         }
-      } else if (recStack[edge.getTo()]) {
+      } else if (inStack[edge.getTo()]) {
         return reconstructCycleDfs(edge.getTo(), node, parent);
       }
     }
 
-    recStack[node] = false;
+    inStack[node] = false;
     return null;
   }
 
@@ -239,21 +238,19 @@ public class CycleDetection {
     return null;
   }
 
-  public List<Integer> dfs(int node, int parentNode,
-      boolean[] visited, int[] parent) {
-
+  public List<Integer> dfs(int node, int parentNode, boolean[] visited, int[] parent) {
     visited[node] = true;
     parent[node] = parentNode;
 
-    for (Edge neighbor : adj.get(node)) {
-      if (!visited[neighbor.getTo()]) {
-        List<Integer> cycle = dfs(neighbor.getTo(), node, visited, parent);
+    for (Edge i : adj.get(node)) {
+      if (!visited[i.getTo()]) {
+        List<Integer> cycle = dfs(i.getTo(), node, visited, parent);
         if (cycle != null) {
           return cycle;
         }
-      } else if (neighbor.getTo() != parentNode) {
+      } else if (i.getTo() != parentNode) {
         // Found a cycle
-        return reconstructCycleDfsUndirected(node, neighbor.getTo(), parent);
+        return reconstructCycleDfsUndirected(node, i.getTo(), parent);
       }
     }
     return null;

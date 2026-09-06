@@ -4,8 +4,6 @@ public final class EagerByStaticBlockSingleton {
 
 	private static final EagerByStaticBlockSingleton INSTANCE;
 
-	private EagerByStaticBlockSingleton() {}
-
 	// static block initialization for exception handling
 	static {
 		try {
@@ -14,6 +12,8 @@ public final class EagerByStaticBlockSingleton {
 			throw new RuntimeException("Exception occurred in creating singleton instance");
 		}
 	}
+
+	private EagerByStaticBlockSingleton() {}
 
 	public static EagerByStaticBlockSingleton getInstance() {
 		return INSTANCE;

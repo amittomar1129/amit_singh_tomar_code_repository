@@ -6,10 +6,10 @@ public class Fruit implements Item {
 	private int weight;
 	private String name;
 
-	public Fruit(int priceKg, int wt, String nm) {
+	public Fruit(int priceKg, int weight, String name) {
 		this.pricePerKg = priceKg;
-		this.weight = wt;
-		this.name = nm;
+		this.weight = weight;
+		this.name = name;
 	}
 
 	public int getPricePerKg() {
@@ -28,5 +28,4 @@ public class Fruit implements Item {
 	public int accept(ShoppingCartVisitor visitor) {
 		return visitor.visit(this);
 	}
-
 }

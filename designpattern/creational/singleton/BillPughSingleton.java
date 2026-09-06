@@ -10,6 +10,10 @@ public final class BillPughSingleton {
 	private BillPughSingleton() {
 	}
 
+	public static BillPughSingleton getInstance() {
+		return SingletonHelper.INSTANCE;
+	}
+
 	/*
 	 * When the singleton class is loaded, SingletonHelper class is not loaded into
 	 * memory and only when someone calls the getInstance() method, this class gets
@@ -18,9 +22,5 @@ public final class BillPughSingleton {
 	 */
 	private static final class SingletonHelper {
 		private static final BillPughSingleton INSTANCE = new BillPughSingleton();
-	}
-
-	public static BillPughSingleton getInstance() {
-		return SingletonHelper.INSTANCE;
 	}
 }

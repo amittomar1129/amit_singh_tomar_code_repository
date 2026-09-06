@@ -27,7 +27,7 @@ public class App {
 		// TODO Auto-generated method stub
 		Topic topics[] = new Topic[5];
 		topics[0] = new Topic("Amit");
-		topics[1] = new Topic("Computor Science");
+		topics[1] = new Topic("Computer Science");
 		topics[2] = new Topic("Data Structure");
 		topics[3] = new Topic("Google");
 		topics[4] = new Topic("Excellent");

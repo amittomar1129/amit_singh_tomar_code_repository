@@ -2,7 +2,6 @@ package datastructure_algorithms.datastructure.nonlinear.tree.graph.connectivity
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -14,14 +13,14 @@ public class DisjointSetUnion {
   private int[] rank; // Size of each component starting with each node
   private int totalComponents;
 
-  public DisjointSetUnion(int size) {
-    this.parent = new int[size];
-    this.rank = new int[size];
-    for (int i = 0; i < size; i++) {
+  public DisjointSetUnion(int vertices) {
+    this.parent = new int[vertices];
+    this.rank = new int[vertices];
+    for (int i = 0; i < vertices; i++) {
       this.parent[i] = i; // Each node is its own parent initially
       this.rank[i] = 1;
     }
-    this.totalComponents = size;
+    this.totalComponents = vertices;
   }
 
   // Find with path compression
@@ -71,7 +70,6 @@ public class DisjointSetUnion {
       }
       cycle.add(destination);
       cycles.add(cycle);
-      return;
     }
   }
 
@@ -82,23 +80,23 @@ public class DisjointSetUnion {
 
   // Count number of connected components
   public int countComponents() {
-    Set<Integer> uniqueParents = new HashSet<>();
+    Set<Integer> set = new HashSet<>();
     for (int i = 0; i < parent.length; i++) {
-      uniqueParents.add(parent[i]);
+      set.add(parent[i]);
     }
-    return uniqueParents.size();
+    return set.size();
     // Or Just return this.totalComponents
   }
 
   // Count number of connected components
   public List<List<Integer>> getAllComponents() {
-    HashMap<Integer, ArrayList<Integer>> allComponents = new HashMap<>();
+    HashMap<Integer, ArrayList<Integer>> map = new HashMap<>();
     for (int i = 0; i < parent.length; i++) {
       int root = parent[i];
-      allComponents.putIfAbsent(root, new ArrayList<>());
-      allComponents.get(root).add(i);
+      map.putIfAbsent(root, new ArrayList<>());
+      map.get(root).add(i);
     }
-    return new ArrayList<>(allComponents.values());
+    return new ArrayList<>(map.values());
   }
 
   // Gets connected component this node belongs to

@@ -1,0 +1,422 @@
+"How do you define a new REST API? What are the important things you consider while designing an API?"
+
+
+1. Understand Business Requirements:
+The first step is understanding what business capability the API should provide.
+
+Suppose we are designing an Order Management System.
+
+Functional Questions
+Who can create orders?
+Can guest users order?
+Can users modify orders?
+Can users cancel orders?
+Can an order contain multiple products?
+Can an order be partially cancelled?
+
+Non-Functional Questions
+Expected requests per second?
+Response time SLA?
+Internal or external API?
+Security requirements?
+Data consistency requirements?
+Audit requirements?
+
+
+2. Identify Resources:
+REST APIs are based on resources, not actions. URLs represent nouns not actions.
+
+Bad
+
+POST /createOrder
+GET /fetchOrder
+POST /cancelOrder
+
+Good
+
+POST /orders
+GET /orders/{orderId}
+PATCH /orders/{orderId}
+DELETE /orders/{orderId}
+
+
+
+3. API Naming Convention: Use meaningful resource names.
+
+Bad
+
+/GetEmployee
+
+Bad
+
+/Employee
+
+Good
+
+/employees
+
+Nested resources /customers/{id}/orders
+Instead of       /orders?customerId=123
+
+Rules
+
+lowercase
+plural nouns
+no verbs
+hyphen instead of underscore
+
+Good
+
+/customer-orders
+
+
+4. Choose Correct HTTP Method: This is one of the favorite interview questions.
+
+5. API Versioning:
+Eventually APIs change. Existing clients should never break.
+
+URI Versioning
+/v1/orders
+/v2/orders
+
+Header Versioning
+Accept:
+application/vnd.company.v2+json   (Used by some organizations.)
+
+Query Version
+/orders?version=2    Avoid.
+
+6. Request DTO Design: Never expose database entities.
+
+                       Bad
+
+                       {
+                       "id":100,
+                       "createdAt":"...",
+                       "isDeleted":false,
+                       "isInternal":true,
+                       "version":10
+                       }
+
+                       These are internal fields.
+
+                       Good
+
+                       {
+                       "customerId":"123",
+                       "items":[
+                       {
+                       "productId":"P100",
+                       "quantity":2
+                       }
+                       ]
+                       }
+
+7. Response Design:
+
+Bad
+
+Success
+
+Bad
+
+true
+
+Good
+
+{
+"orderId":"12345",
+"status":"CREATED",
+"createdAt":"..."
+}
+
+Consistent response format.
+
+Example
+
+{
+"data":{},
+"metadata":{},
+"errors":[]
+}
+
+
+8. HTTP Status Codes
+Code	Meaning	Example
+200	Success	        GET
+201	Created	        POST
+202	Accepted	    Async Processing
+204	No Content	    DELETE, PATCH
+400	Bad Request	    Validation Failed
+401	Unauthorized	JWT Missing
+403	Forbidden	    No Permission
+404	Not Found	    Order Missing
+409	Conflict	    Duplicate Order
+422	Validation Error	Business Validation
+429	Too Many Requests	Rate Limit
+500	Server Error	Unexpected
+
+
+Never return
+
+200
+
+{
+"success":false
+}
+
+
+9. Validation
+
+Validate at API layer.
+
+Java
+
+@NotNull
+
+@NotBlank
+
+@Email
+
+@Pattern
+
+@Size
+
+Example
+
+POST /users
+
+{
+"email":"abc"
+}
+
+Return
+
+422
+
+Invalid email
+
+
+
+
+10. Error Response:
+
+Never
+
+500
+
+Something went wrong
+
+Instead
+
+{
+"timestamp":"2026-07-23T12:30",
+"status":404,
+"errorCode":"ORDER_NOT_FOUND",
+"message":"Order 123 does not exist",
+"path":"/orders/123",
+"traceId":"abc123xyz"
+}
+
+Benefits
+
+debugging
+monitoring
+client-friendly
+support teams
+
+
+
+
+11. Idempotency:
+
+Very important for payment APIs.
+
+
+
+Without idempotency
+
+Charge ?1000
+
+Charge ?1000
+
+Charge ?1000
+
+Triple payment.
+
+Solution
+
+POST /payments
+
+Header
+
+X-Idempotency-Key:
+123ABC
+
+Server stores
+
+123ABC
+
+Payment Success
+
+Retry with same key returns previous response.
+
+No duplicate payment.
+
+
+12. Pagination:
+
+Never
+
+GET /employees
+
+Suppose
+
+10 million rows.
+
+Server crashes.
+
+Use
+
+GET /employees?page=1&size=20
+
+Better
+
+Cursor pagination
+
+GET /employees?cursor=xyz123
+
+Cursor pagination is preferred for large datasets because it avoids expensive OFFSET scans
+and provides stable results when new records are inserted.
+
+
+
+
+21. Caching:
+
+Frequently read APIs should be cached.
+
+Example
+
+GET /products
+
+Cache
+
+Redis
+
+Use
+
+Cache-Control
+
+ETag
+
+If-None-Match
+
+to reduce unnecessary data transfer.
+
+
+
+
+23. API Documentation:
+
+Use OpenAPI/Swagger.
+
+Benefits
+
+Contract-first development
+SDK generation
+Frontend development before backend completion
+Easy testing
+
+
+24. Backward Compatibility:
+
+Never remove existing fields.
+
+Old
+
+{
+"name":"Amit"
+}
+
+Need new field
+
+{
+"name":"Amit",
+"fullName":"Amit Singh Tomar"
+}
+
+Deprecate old field gradually instead of breaking clients.
+
+
+
+
+
+
+25. API Design Principles
+Consistency: Use the same naming and response format across all APIs.
+Statelessness: Do not store client session state on the server.
+Idempotency: Critical for retryable operations.
+Loose Coupling: Clients should not depend on internal implementation.
+Resource-Oriented Design: Model business entities, not actions.
+Extensibility: Design APIs so new fields can be added without breaking clients.
+Security by Default: Authentication, authorization, encryption, input validation.
+Observability: Logs, metrics, tracing, audit trails.
+Performance: Pagination, compression, caching, efficient payloads.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Complete Example – Create Order API
+Request
+POST /v1/orders
+Authorization: Bearer <JWT>
+X-Idempotency-Key: 8a7d5f1e
+{
+  "customerId": "C12345",
+  "items": [
+    {
+      "productId": "P100",
+      "quantity": 2
+    },
+    {
+      "productId": "P200",
+      "quantity": 1
+    }
+  ],
+  "paymentMethod": "UPI",
+  "shippingAddressId": "ADDR789"
+}
+Response
+
+201 Created
+{
+  "orderId": "ORD-987654",
+  "status": "CREATED",
+  "totalAmount": 3499.00,
+  "createdAt": "2026-07-23T18:45:12Z"
+}
+
+Error Response
+
+409 Conflict
+{
+  "errorCode": "DUPLICATE_ORDER",
+  "message": "An order with this idempotency key has already been processed.",
+  "traceId": "4b8c9d12ef"
+}
